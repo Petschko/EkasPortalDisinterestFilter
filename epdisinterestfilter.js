@@ -21,7 +21,7 @@
     /**
      * Contains all users we has blocked
      *
-     * @type {Array|null|string} - All blocked Users
+     * @type {Array} - All blocked Users
      */
     var badUserList = [];
 
