@@ -26,6 +26,13 @@
     var currentUserHiddenList = [];
 
     /**
+     * Resets the current Block User List
+     */
+    function resetCurrentBlockUser() {
+        currentUserHiddenList = [];
+    }
+
+    /**
      * Save the bad user list to local storage.
      */
     function saveData()
@@ -60,7 +67,7 @@
     {
         // Check if User is already in list
         if(badUserList.indexOf(username) != -1) {
-            refreshPage(); // Reload to removed wrong buttons cause this case
+            refreshPage(); // Reload to remove wrong buttons that may cause this case
             return;
         }
 
@@ -81,7 +88,7 @@
 
         // Check if User is in list
         if(index == -1) {
-            refreshPage(); // Reload to removed wrong buttons cause this case
+            refreshPage(); // Reload to remove wrong buttons that may cause this case
             return;
         }
 
@@ -91,15 +98,40 @@
     }
 
     /**
+     * Detect if the haystack starts with needle this function is case insensitive
+     *
+     * @param {string} haystack - String to check
+     * @param {string} needle - Start string on haystack
+     * @returns {boolean} - true if haystack starts with needle
+     */
+    function stringStartWith(haystack, needle) {
+        return haystack.toLowerCase().indexOf(needle.toLowerCase(), 0) === 0;
+    }
+
+    /**
      * Refresh OUR data on the page. (Doesn't cause an actual page request.)
      */
     function refreshPage()
     {
-        var i;
-        currentUserHiddenList = [];
+        resetCurrentBlockUser();
 
+        // Check the function we need to build or stuff in use the <title> content to check
+        if(stringStartWith(document.title, 'g4 :: Lastest Updates'))
+            refreshG4LastestUpdates();
+
+        // todo implement: "g4 :: Tagged", "g4 :: Messages", "g4 :: Search Results"
+
+    }
+
+    /**
+     * Refreshes the Lastest Update Site
+     */
+    function refreshG4LastestUpdates()
+    {
         // Handle the g4/latest.php page with this.
         var galleryBox = document.getElementsByClassName("g-box-contents");
+        var i;
+
         if(galleryBox.length > 0) {
             galleryBox = galleryBox[0];
 
