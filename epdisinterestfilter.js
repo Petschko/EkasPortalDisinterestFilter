@@ -38,11 +38,15 @@
      */
     function loadData()
     {
-        badUserList = localStorage.getItem("whtb-blocklist");
-        if(badUserList === null)
-            badUserList = "";
+        var loadedList = localStorage.getItem("whtb-blocklist");
 
-        badUserList = badUserList.split(",");
+        // Handle if list doesn't exists
+        if(loadedList === null)
+            return;
+
+        badUserList = loadedList.split(",");
+
+        // Show Loaded User in Log
         for(var i = 0; i < badUserList.length; i++)
             console.log("Loaded bad user: " + badUserList[i]);
     }
