@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eka's Portal Disinterest Filter
-// @namespace    http://tampermonkey.net/
-// @version      0.1
+// @namespace    http://zcxv.com/
+// @version      0.2
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
 // @match        http*://aryion.com/g4/*
@@ -58,6 +58,7 @@
     // Refresh OUR data on the page. (Doesn't cause an actual page request.)
     function refreshPage()
     {
+        var i;
         currentUserHiddenList = [];
 
         // Handle the g4/latest.php page with this.
