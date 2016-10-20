@@ -11,18 +11,31 @@
 (function() {
     'use strict';
 
+    /**
+     * Contains all users we has blocked
+     *
+     * @type {Array|null|string} - All blocked Users
+     */
     var badUserList = [];
 
-    // Keep track of which users we've actually hidden, so we can display unblock buttons for them.
+    /**
+     * Keep track of which users we've actually hidden, so we can display unblock buttons for them.
+     *
+     * @type {Array} - Currently hidden Users
+     */
     var currentUserHiddenList = [];
 
-    // Save the bad user list to local storage.
+    /**
+     * Save the bad user list to local storage.
+     */
     function saveData()
     {
         localStorage.setItem("whtb-blocklist", badUserList.join());
     }
 
-    // Load the bad user list from local storage.
+    /**
+     * Load the bad user list from local storage.
+     */
     function loadData()
     {
         badUserList = localStorage.getItem("whtb-blocklist");
@@ -34,9 +47,12 @@
             console.log("Loaded bad user: " + badUserList[i]);
         }
     }
-    loadData();
 
-    // Block a user by name.
+    /**
+     * Block a user by name.
+     *
+     * @param {string} username - Username to block
+     */
     function blockUser(username)
     {
         badUserList = badUserList.concat([username]);
@@ -44,7 +60,11 @@
         saveData();
     }
 
-    // Unblock a user by name.
+    /**
+     * Unblock a user by name.
+     *
+     * @param {string} username - Username to unblock
+     */
     function unblockUser(username)
     {
         var index = badUserList.indexOf(username);
@@ -55,7 +75,9 @@
         saveData();
     }
 
-    // Refresh OUR data on the page. (Doesn't cause an actual page request.)
+    /**
+     * Refresh OUR data on the page. (Doesn't cause an actual page request.)
+     */
     function refreshPage()
     {
         var i;
@@ -146,7 +168,11 @@
         }
     }
 
+    // ------------------------------------------------
+
+    // Loads settings
+    loadData();
+
     // Now just do an initial refresh.
     refreshPage();
-
 })();
