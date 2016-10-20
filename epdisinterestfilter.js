@@ -19,7 +19,7 @@
     var debug = true;
 
     /**
-     * Contains all users we has blocked
+     * Contains all users we have blocked
      *
      * @type {Array} - All blocked Users
      */
@@ -186,8 +186,41 @@
         if(stringStartWith(document.title, 'g4 :: Latest Updates'))
             refreshG4LatestUpdates();
 
-        // todo implement: "g4 :: Tagged", "g4 :: Messages", "g4 :: Search Results"
+        if(stringStartWith(document.title, 'g4 :: Messages'))
+            refreshG4Messages();
 
+        if(stringStartWith(document.title, 'g4 :: Tagged'))
+            refreshG4Tagged();
+
+        if(stringStartWith(document.title, 'g4 :: Search Results'))
+            refreshG4Search();
+    }
+
+    /**
+     * todo doc
+     */
+    function refreshG4Search()
+    {
+        logAdd('Function: refreshG4Search()');
+        // todo implement
+    }
+
+    /**
+     * todo doc
+     */
+    function refreshG4Tagged()
+    {
+        logAdd('Function: refreshG4Tagged()');
+        // todo implement
+    }
+
+    /**
+     * todo doc
+     */
+    function refreshG4Messages()
+    {
+        logAdd('Function: refreshG4Messages()');
+        // todo implement
     }
 
     /**
