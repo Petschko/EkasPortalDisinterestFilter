@@ -104,8 +104,53 @@
      * @param {string} needle - Start string on haystack
      * @returns {boolean} - true if haystack starts with needle
      */
-    function stringStartWith(haystack, needle) {
+    function stringStartWith(haystack, needle)
+    {
         return haystack.toLowerCase().indexOf(needle.toLowerCase(), 0) === 0;
+    }
+
+    /**
+     * Creates a UnBlock button with assigned OnClick function
+     *
+     * @param {string} username - Username of the UnBlock-User for this Button
+     * @returns {Element} - UnBlock-Button
+     */
+    function createUnBlockButton(username) {
+        var restoreButton = document.createElement('BUTTON');
+        restoreButton.innerHTML = username;
+
+        /**
+         * Adds the unblockUser function to this Button
+         */
+        restoreButton.onclick = function()
+        {
+            unblockUser(username);
+        };
+
+        return restoreButton;
+    }
+
+    /**
+     * Creates a Block button with assigned OnClick function
+     *
+     * @param {string} username - Username of the Block-User for this Button
+     * @returns {Element} - BlockButton
+     */
+    function createBlockButton(username)
+    {
+        var hideButton = document.createElement('BUTTON');
+        hideButton.innerHTML = 'Block ' + username;
+        hideButton.className = 'whtb-block-button';
+
+        /**
+         * Adds the blockUser function to this Button
+         */
+        hideButton.onclick = function()
+        {
+            blockUser(username);
+        };
+
+        return hideButton;
     }
 
     /**
