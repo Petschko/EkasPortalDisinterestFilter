@@ -4,12 +4,19 @@
 // @version      0.2
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
-// @match        http*://aryion.com/g4/*
+// @match        http://aryion.com/g4/*
 // @grant        none
 // ==/UserScript==
 
 (function() {
     'use strict';
+
+    /**
+     * Contains if debug is enabled
+     *
+     * @type {boolean} - true debug is enabled else false
+     */
+    var debug = true;
 
     /**
      * Contains all users we has blocked
@@ -46,6 +53,7 @@
     function loadData()
     {
         var loadedList = localStorage.getItem("whtb-blocklist");
+        logAdd('Load Block-List');
 
         // Handle if list doesn't exists
         if(loadedList === null)
@@ -55,7 +63,7 @@
 
         // Show Loaded User in Log
         for(var i = 0; i < badUserList.length; i++)
-            console.log("Loaded bad user: " + badUserList[i]);
+            logAdd("Loaded bad user: " + badUserList[i]);
     }
 
     /**
@@ -106,7 +114,17 @@
      */
     function stringStartWith(haystack, needle)
     {
-        return haystack.toLowerCase().indexOf(needle.toLowerCase(), 0) === 0;
+        return haystack.toLowerCase().indexOf(needle.toLowerCase()) === 0;
+    }
+
+    /**
+     * Displays a message on the console if debug is enabled
+     *
+     * @param {string} message - Message to add
+     */
+    function logAdd(message) {
+        if(debug)
+            console.log(message);
     }
 
     /**
@@ -115,7 +133,8 @@
      * @param {string} username - Username of the UnBlock-User for this Button
      * @returns {Element} - UnBlock-Button
      */
-    function createUnBlockButton(username) {
+    function createUnBlockButton(username)
+    {
         var restoreButton = document.createElement('BUTTON');
         restoreButton.innerHTML = username;
 
@@ -160,11 +179,12 @@
      */
     function refreshPage()
     {
+        logAdd('Refresh Page...');
         resetCurrentBlockUser();
 
         // Check the function we need to build or stuff in use the <title> content to check
-        if(stringStartWith(document.title, 'g4 :: Lastest Updates'))
-            refreshG4LastestUpdates();
+        if(stringStartWith(document.title, 'g4 :: Latest Updates'))
+            refreshG4LatestUpdates();
 
         // todo implement: "g4 :: Tagged", "g4 :: Messages", "g4 :: Search Results"
 
@@ -173,8 +193,10 @@
     /**
      * Refreshes the Lastest Update Site
      */
-    function refreshG4LastestUpdates()
+    function refreshG4LatestUpdates()
     {
+        logAdd('Function: refreshG4LatestUpdates()');
+
         // Handle the g4/latest.php page with this.
         var galleryBox = document.getElementsByClassName("g-box-contents");
         var i;
