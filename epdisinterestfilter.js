@@ -39,13 +39,12 @@
     function loadData()
     {
         badUserList = localStorage.getItem("whtb-blocklist");
-        if(badUserList === null) {
+        if(badUserList === null)
             badUserList = "";
-        }
+
         badUserList = badUserList.split(",");
-        for(var i = 0; i < badUserList.length; i++) {
+        for(var i = 0; i < badUserList.length; i++)
             console.log("Loaded bad user: " + badUserList[i]);
-        }
     }
 
     /**
@@ -68,9 +67,10 @@
     function unblockUser(username)
     {
         var index = badUserList.indexOf(username);
-        if(index != -1) {
+
+        if(index != -1)
             badUserList.splice(index, 1);
-        }
+
         refreshPage();
         saveData();
     }
@@ -94,16 +94,15 @@
                 unblockButtonBox = document.createElement("div");
                 unblockButtonBox.className = "whtb-unblock-box";
                 galleryBox.insertBefore(unblockButtonBox, galleryBox.firstChild);
-            } else {
+            } else
                 unblockButtonBox = unblockButtonBox[0];
-            }
+
             unblockButtonBox.innerHTML = "Unblock buttons: ";
 
             // Clear out existing block buttons from the last iteration.
             var existingBlockButtons = document.getElementsByClassName("whtb-block-button");
-            while(existingBlockButtons.length > 0) {
+            while(existingBlockButtons.length > 0)
                 existingBlockButtons[0].parentElement.removeChild(existingBlockButtons[0]);
-            }
 
             // Iterate over galley entries.
             var items = galleryBox.getElementsByClassName("detail-item");
@@ -122,9 +121,8 @@
                         // Found someone we want to block. Hide the element and add to our
                         // list of unblock buttons.
                         items[i].style.display = "none";
-                        if(currentUserHiddenList.indexOf(username) == -1) {
+                        if(currentUserHiddenList.indexOf(username) == -1)
                             currentUserHiddenList = currentUserHiddenList.concat([username]);
-                        }
 
                     } else {
 
