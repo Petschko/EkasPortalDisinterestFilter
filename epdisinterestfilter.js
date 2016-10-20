@@ -58,7 +58,14 @@
      */
     function blockUser(username)
     {
-        badUserList = badUserList.concat([username]);
+        // Check if User is already in list
+        if(badUserList.indexOf(username) != -1) {
+            refreshPage(); // Reload to removed wrong buttons cause this case
+            return;
+        }
+
+        // Add User and save
+        badUserList.push(username);
         refreshPage();
         saveData();
     }
@@ -72,9 +79,13 @@
     {
         var index = badUserList.indexOf(username);
 
-        if(index != -1)
-            badUserList.splice(index, 1);
+        // Check if User is in list
+        if(index == -1) {
+            refreshPage(); // Reload to removed wrong buttons cause this case
+            return;
+        }
 
+        badUserList.splice(index, 1);
         refreshPage();
         saveData();
     }
@@ -175,6 +186,6 @@
     // Loads settings
     loadData();
 
-    // Now just do an initial refresh.
+    // Now just do an initial refresh to show our optional stuff.
     refreshPage();
 })();
