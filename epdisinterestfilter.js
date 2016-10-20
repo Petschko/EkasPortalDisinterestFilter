@@ -124,7 +124,8 @@
          */
         restoreButton.onclick = function()
         {
-            unblockUser(username);
+            if(confirm('Do you really wan\'t unblock ' + username + '?'))
+                unblockUser(username);
         };
 
         return restoreButton;
@@ -147,7 +148,8 @@
          */
         hideButton.onclick = function()
         {
-            blockUser(username);
+            if(confirm('Are you sure to block ' + username + '?'))
+                blockUser(username);
         };
 
         return hideButton;
