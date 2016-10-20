@@ -211,32 +211,20 @@
                     var username = userLink.innerHTML;
 
                     if(badUserList.indexOf(username) != -1) {
-
                         // Found someone we want to block. Hide the element and add to our
                         // list of unblock buttons.
                         items[i].style.display = "none";
+
                         if(currentUserHiddenList.indexOf(username) == -1)
-                            currentUserHiddenList = currentUserHiddenList.concat([username]);
-
+                            currentUserHiddenList.push(username);
                     } else {
-
                         // This user is fine, but just in case we want to block them, we
                         // better add a block button. We could also be coming in from an
                         // unblock command, so we need to reset the visibility.
                         items[i].style.display = "";
 
                         // Set up the block button.
-                        var hideButton = document.createElement("BUTTON");
-                        hideButton.innerHTML = "Block";
-                        hideButton.className = "whtb-block-button";
-                        // (This is the point where I tell everyone that function
-                        // level scope is fucking pants-on-head retarded.)
-                        var setupButton = function(un) {
-                            hideButton.onclick = function() {
-                                blockUser(un);
-                            };
-                        };
-                        setupButton(username);
+                        var hideButton = createBlockButton(username);
 
                         // Stick this right next to the username.
                         userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
@@ -247,15 +235,8 @@
             // Generate the "Unblock button" list at the top.
             currentUserHiddenList.sort();
             for(i = 0; i < currentUserHiddenList.length; i++) {
-                var restoreButton = document.createElement("BUTTON");
-                restoreButton.innerHTML = currentUserHiddenList[i];
+                var restoreButton = createUnBlockButton(currentUserHiddenList[i]);
                 unblockButtonBox.appendChild(restoreButton);
-                var setupUnblockButton = function(un) {
-                    restoreButton.onclick = function() {
-                        unblockUser(un);
-                    };
-                };
-                setupUnblockButton(currentUserHiddenList[i]);
             }
         }
     }
