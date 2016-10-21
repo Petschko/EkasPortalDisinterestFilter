@@ -5,6 +5,7 @@
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
 // @match        http://aryion.com/g4/*
+// @match        https://aryion.com/g4/*
 // @grant        none
 // ==/UserScript==
 
@@ -12,9 +13,16 @@
     'use strict';
 
     /**
+     * Option to skip confirmation dialogs when blocking a user.
+     *
+     * @type {boolean} - true if the confirmation is presented, otherwise false.
+     */
+    var skipConfirmationDialog = false;
+
+    /**
      * Contains if debug is enabled
      *
-     * @type {boolean} - true debug is enabled else false
+     * @type {boolean} - true if debug is enabled else false
      */
     var debug = true;
 
@@ -143,8 +151,11 @@
          */
         restoreButton.onclick = function()
         {
-            if(confirm('Do you really wan\'t unblock ' + username + '?'))
+            if(skipConfirmationDialog ||
+               confirm('Do you really wan\'t unblock ' + username + '?'))
+            {
                 unblockUser(username);
+            }
         };
 
         return restoreButton;
@@ -167,8 +178,11 @@
          */
         hideButton.onclick = function()
         {
-            if(confirm('Are you sure to block ' + username + '?'))
+            if(skipConfirmationDialog ||
+               confirm('Are you sure to block ' + username + '?'))
+            {
                 blockUser(username);
+            }
         };
 
         return hideButton;
@@ -194,8 +208,7 @@
          */
         showHideButton.onclick = function()
         {
-            if(hideElement.style.display == 'none')
-            {
+            if(hideElement.style.display == 'none') {
                 hideElement.style.display = '';
                 showHideButton.innerHTML = 'Hide';
             } else {
@@ -250,10 +263,8 @@
         // Sort by ABC
         userArray.sort();
 
-        for(var i = 0; i < userArray.length; i++)
-        {
-            if(userArray[i]) // Handling empty spots in some arrays...
-            {
+        for(var i = 0; i < userArray.length; i++) {
+            if(userArray[i]) { // Handle empty spots in some arrays.
                 var restoreButton = createUnBlockButton(userArray[i]);
                 addToEl.appendChild(restoreButton);
             }
@@ -352,29 +363,30 @@
         // Iterate over galley entries.
         var items = galleryBox.getElementsByClassName('detail-item');
 
-        for(i = 0; i < items.length; i++)
-        {
+        for(i = 0; i < items.length; i++) {
 
             // We'll just assume that the first user link is the user that posted it.
             // Be careful, because this can also point to comments made by users.
             // Note: user-comments can detected by searching for <this>.parent.parent.parent(classname) == comment
             var userLink = items[i].getElementsByClassName('user-link');
 
-            if(userLink.length > 0)
-            {
+            if(userLink.length > 0) {
+
                 userLink = userLink[0];
 
                 var username = userLink.innerHTML;
 
-                if(badUserList.indexOf(username) != -1)
-                {
+                if(badUserList.indexOf(username) != -1) {
+
                     // Found someone we want to block. Hide the element and add to our
                     // list of unblock buttons.
                     items[i].style.display = 'none';
 
                     if(currentUserHiddenList.indexOf(username) == -1)
                         currentUserHiddenList.push(username);
+
                 } else {
+
                     // This user is fine, but just in case we want to block them, we
                     // better add a block button. We could also be coming in from an
                     // unblock command, so we need to reset the visibility.
@@ -401,4 +413,5 @@
 
     // Now just do an initial refresh to show our optional stuff.
     refreshPage();
+
 })();
