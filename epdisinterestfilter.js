@@ -136,6 +136,21 @@
     }
 
     /**
+     * Assign CSS-Styles, so that the Element looks like a button
+     *
+     * @param {Element} element - Element where to add CSS
+     */
+    function assignButtonCSS(element) {
+        element.style.border = '1px solid #2d37ff';
+        element.style.backgroundColor = '#FFFFFF';
+        element.style.borderRadius = '4px';
+        element.style.display = 'inline-block';
+        element.style.padding = '4px';
+        element.style.background = 'linear-gradient(#E0E0E0, #B0B0B0)';
+        element.style.cursor = 'pointer';
+    }
+
+    /**
      * Creates a UnBlock button with assigned OnClick function
      *
      * @param {string} username - Username of the UnBlock-User for this Button
@@ -143,7 +158,8 @@
      */
     function createUnBlockButton(username)
     {
-        var restoreButton = document.createElement('BUTTON');
+        var restoreButton = document.createElement('span');
+        assignButtonCSS(restoreButton);
         restoreButton.innerHTML = username;
 
         /**
@@ -168,7 +184,8 @@
      */
     function createBlockButton(username)
     {
-        var hideButton = document.createElement('BUTTON');
+        var hideButton = document.createElement('span');
+        assignButtonCSS(hideButton);
         hideButton.innerHTML = 'Block ' + username;
         hideButton.className = 'whtb-block-button';
 
@@ -194,7 +211,9 @@
      */
     function createShowHideButton(hideElement)
     {
-        var showHideButton = document.createElement('BUTTON');
+        var showHideButton = document.createElement('span');
+        assignButtonCSS(showHideButton);
+
         // Initial text depends on status of the element
         if(hideElement.style.display == 'none')
             showHideButton.innerHTML = 'Show';
@@ -336,8 +355,17 @@
         if(mainContainer.length == 0)
             return;
 
-        // Use the first occur of the class
+        // Use the first occur of the class there more of these containers but the first one is the correct container
         mainContainer = mainContainer[0];
+
+        // Create or find the existing unblock button box, then clear it out so we can rebuild it.
+        var unblockButtonBox = unlockButtonContainer('whtb-unblock-box', mainContainer, 'Unblock User (On this Page): ');
+        var globalUnblockButtonBox = unlockButtonContainer('whtb-global-unblock-box', mainContainer, 'Unblock User (Global List): ');
+        // Add Buttons to global List
+        createUnblockButtonListFromArray(badUserList, globalUnblockButtonBox);
+
+        // Clear out existing block buttons from the last iteration.
+        removeExistingButtons('whtb-block-button');
         // todo implement
     }
 
