@@ -170,7 +170,7 @@
         restoreButton.onclick = function()
         {
             if(skipConfirmationDialog ||
-               confirm('Do you really wan\'t unblock ' + username + '?')) {
+               confirm('Do you really want unblock ' + username + '?')) {
                 unblockUser(username);
             }
         };
