@@ -174,13 +174,26 @@
         return hideButton;
     }
 
+    /**
+     * Creates a button to show/hide the hideElement
+     *
+     * @param {Element} hideElement - Element to Hide/Show
+     * @returns {Element} - Show/Hide Button
+     */
     function createShowHideButton(hideElement)
     {
         var showHideButton = document.createElement('BUTTON');
-        showHideButton.innerHTML = 'Show';
+        // Initial text depends on status of the element
+        if(hideElement.style.display == 'none')
+            showHideButton.innerHTML = 'Show';
+        else
+            showHideButton.innerHTML = 'Hide';
 
-        showHideButton.onclick = function() {
-            //alert(hideElement.style.display);
+        /**
+         * Hide/Shows the Element also changes the Text on the Button
+         */
+        showHideButton.onclick = function()
+        {
             if(hideElement.style.display == 'none')
             {
                 hideElement.style.display = '';
