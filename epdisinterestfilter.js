@@ -44,7 +44,7 @@
      */
     function saveData()
     {
-        localStorage.setItem("whtb-blocklist", badUserList.join());
+        localStorage.setItem('whtb-blocklist', badUserList.join());
     }
 
     /**
@@ -52,18 +52,18 @@
      */
     function loadData()
     {
-        var loadedList = localStorage.getItem("whtb-blocklist");
+        var loadedList = localStorage.getItem('whtb-blocklist');
         logAdd('Load Block-List');
 
         // Handle if list doesn't exists
         if(loadedList === null)
             return;
 
-        badUserList = loadedList.split(",");
+        badUserList = loadedList.split(',');
 
         // Show Loaded User in Log
         for(var i = 0; i < badUserList.length; i++)
-            logAdd("Loaded bad user: " + badUserList[i]);
+            logAdd('Loaded bad user: ' + badUserList[i]);
     }
 
     /**
@@ -175,6 +175,57 @@
     }
 
     /**
+     * Check if a unlock Button-container is available if not create it
+     *
+     * @param {string} className - Class Name of the unlock Button-Container
+     * @param {Element} insertBefore - The element where to place the Button-Container(before element)
+     * @returns {Element} - The unlock Button-Container
+     */
+    function unlockButtonContainer(className, insertBefore) {
+        var unblockButtonBox = document.getElementsByClassName(className);
+
+        if(unblockButtonBox.length == 0) {
+            var newUnblockButtonBox = document.createElement('div');
+            newUnblockButtonBox.className = className;
+            insertBefore.insertBefore(newUnblockButtonBox, insertBefore.firstChild);
+
+            return newUnblockButtonBox;
+        }
+
+        return unblockButtonBox[0];
+    }
+
+    /**
+     * Creates UnBlock-Buttons from User Array
+     *
+     * @param {Array} userArray - Array with User Names
+     * @param {Element} addToEl - Element where the Buttons go as child
+     */
+    function createUnblockButtonListFromArray(userArray, addToEl) {
+        // Sort by ABC
+        userArray.sort();
+
+        for(var i = 0; i < userArray.length; i++) {
+            if(userArray[i]) { // Handling empty spots in some arrays...
+                var restoreButton = createUnBlockButton(userArray[i]);
+                addToEl.appendChild(restoreButton);
+            }
+        }
+    }
+
+    /**
+     * Remove all existing Buttons with the specified class name
+     *
+     * @param {string} className - Class Name of the Button(s)
+     */
+    function removeExistingButtons(className) {
+        var existingButtons = document.getElementsByClassName(className);
+
+        while(existingButtons.length > 0)
+            existingButtons[0].parentNode.removeChild(existingButtons[0]);
+    }
+
+    /**
      * Refresh OUR data on the page. (Doesn't cause an actual page request.)
      */
     function refreshPage()
@@ -231,69 +282,67 @@
         logAdd('Function: refreshG4LatestUpdates()');
 
         // Handle the g4/latest.php page with this.
-        var galleryBox = document.getElementsByClassName("g-box-contents");
+        var galleryBox = document.getElementsByClassName('g-box-contents');
         var i;
 
-        if(galleryBox.length > 0) {
-            galleryBox = galleryBox[0];
+        // Check if the class exists
+        if(galleryBox.length == 0)
+            return;
 
-            // Create or find the existing unblock button box, then clear it out so we can rebuild it.
-            var unblockButtonBox = document.getElementsByClassName("whtb-unblock-box");
-            if(unblockButtonBox.length === 0) {
-                unblockButtonBox = document.createElement("div");
-                unblockButtonBox.className = "whtb-unblock-box";
-                galleryBox.insertBefore(unblockButtonBox, galleryBox.firstChild);
-            } else
-                unblockButtonBox = unblockButtonBox[0];
+        // Use the first occur of the class
+        galleryBox = galleryBox[0];
 
-            unblockButtonBox.innerHTML = "Unblock buttons: ";
+        // Create or find the existing unblock button box, then clear it out so we can rebuild it.
+        var unblockButtonBox = unlockButtonContainer('whtb-unblock-box', galleryBox);
+        unblockButtonBox.innerHTML = 'Unblock User (On this Page): ';
+        var globalUnblockButtonBox = unlockButtonContainer('whtb-global-unblock-box', unblockButtonBox);
+        // Add Buttons to global List
+        globalUnblockButtonBox.innerHTML = 'Unblock (Global List): ';
+        createUnblockButtonListFromArray(badUserList, globalUnblockButtonBox);
 
-            // Clear out existing block buttons from the last iteration.
-            var existingBlockButtons = document.getElementsByClassName("whtb-block-button");
-            while(existingBlockButtons.length > 0)
-                existingBlockButtons[0].parentElement.removeChild(existingBlockButtons[0]);
+        // Clear out existing block buttons from the last iteration.
+        removeExistingButtons('whtb-block-button');
 
-            // Iterate over galley entries.
-            var items = galleryBox.getElementsByClassName("detail-item");
-            for(i = 0; i < items.length; i++) {
+        // Iterate over galley entries.
+        var items = galleryBox.getElementsByClassName('detail-item');
 
-                // We'll just assume that the first user link is the user that posted it.
-                // Be careful, because this can also point to comments made by users.
-                var userLink = items[i].getElementsByClassName("user-link");
-                if(userLink.length > 0) {
-                    userLink = userLink[0];
+        for(i = 0; i < items.length; i++) {
 
-                    var username = userLink.innerHTML;
+            // We'll just assume that the first user link is the user that posted it.
+            // Be careful, because this can also point to comments made by users.
+            // Note: user-comments can detected by searching for <this>.parent.parent.parent(classname) == comment
+            var userLink = items[i].getElementsByClassName('user-link');
 
-                    if(badUserList.indexOf(username) != -1) {
-                        // Found someone we want to block. Hide the element and add to our
-                        // list of unblock buttons.
-                        items[i].style.display = "none";
+            if(userLink.length > 0) {
+                userLink = userLink[0];
 
-                        if(currentUserHiddenList.indexOf(username) == -1)
-                            currentUserHiddenList.push(username);
-                    } else {
-                        // This user is fine, but just in case we want to block them, we
-                        // better add a block button. We could also be coming in from an
-                        // unblock command, so we need to reset the visibility.
-                        items[i].style.display = "";
+                var username = userLink.innerHTML;
 
-                        // Set up the block button.
-                        var hideButton = createBlockButton(username);
+                if(badUserList.indexOf(username) != -1) {
+                    // Found someone we want to block. Hide the element and add to our
+                    // list of unblock buttons.
+                    items[i].style.display = 'none';
 
-                        // Stick this right next to the username.
-                        userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
-                    }
+                    if(currentUserHiddenList.indexOf(username) == -1)
+                        currentUserHiddenList.push(username);
+                } else {
+                    // This user is fine, but just in case we want to block them, we
+                    // better add a block button. We could also be coming in from an
+                    // unblock command, so we need to reset the visibility.
+                    items[i].style.display = "";
+
+                    // Set up the block button.
+                    var hideButton = createBlockButton(username);
+
+                    // Stick this right next to the username.
+                    userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
                 }
             }
-
-            // Generate the "Unblock button" list at the top.
-            currentUserHiddenList.sort();
-            for(i = 0; i < currentUserHiddenList.length; i++) {
-                var restoreButton = createUnBlockButton(currentUserHiddenList[i]);
-                unblockButtonBox.appendChild(restoreButton);
-            }
         }
+
+        // Generate the "Unblock button" list at the top. just for user on this page
+        currentUserHiddenList.sort();
+        createUnblockButtonListFromArray(currentUserHiddenList, unblockButtonBox);
     }
 
     // ------------------------------------------------
