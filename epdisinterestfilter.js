@@ -148,6 +148,8 @@
         element.style.padding = '4px';
         element.style.background = 'linear-gradient(#E0E0E0, #B0B0B0)';
         element.style.cursor = 'pointer';
+        element.style.margin = '5px';
+        // todo make better style
     }
 
     /**
@@ -359,8 +361,8 @@
         mainContainer = mainContainer[0];
 
         // Create or find the existing unblock button box, then clear it out so we can rebuild it.
-        var unblockButtonBox = unlockButtonContainer('whtb-unblock-box', mainContainer, 'Unblock User (On this Page): ');
-        var globalUnblockButtonBox = unlockButtonContainer('whtb-global-unblock-box', mainContainer, 'Unblock User (Global List): ');
+        var unblockButtonBox = unlockButtonContainer('whtb-unblock-box', mainContainer, 'Unblock User (On this Page):');
+        var globalUnblockButtonBox = unlockButtonContainer('whtb-global-unblock-box', mainContainer, 'Unblock User (Global List):');
         // Add Buttons to global List
         createUnblockButtonListFromArray(badUserList, globalUnblockButtonBox);
 
