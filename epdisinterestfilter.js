@@ -145,10 +145,10 @@
         element.style.backgroundColor = '#FFFFFF';
         element.style.borderRadius = '4px';
         element.style.display = 'inline-block';
-        element.style.padding = '4px';
+        element.style.padding = '2px 4px';
         element.style.background = 'linear-gradient(#E0E0E0, #B0B0B0)';
         element.style.cursor = 'pointer';
-        element.style.margin = '5px';
+        element.style.margin = '3px';
         // todo make better style
     }
 
@@ -258,6 +258,9 @@
             unblockButtonArea.style.display = 'none';
             newUnblockButtonBox.className = className;
             newUnblockButtonBox.innerHTML = text;
+			newUnblockButtonBox.style.border = '1px solid #000000';
+			newUnblockButtonBox.style.padding = '2px 4px';
+			newUnblockButtonBox.style.margin = '3px 0';
             newUnblockButtonBox.appendChild(createShowHideButton(unblockButtonArea));
             newUnblockButtonBox.appendChild(unblockButtonArea);
             insertBefore.insertBefore(newUnblockButtonBox, insertBefore.firstChild);
