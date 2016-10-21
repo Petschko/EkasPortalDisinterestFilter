@@ -152,8 +152,7 @@
         restoreButton.onclick = function()
         {
             if(skipConfirmationDialog ||
-               confirm('Do you really wan\'t unblock ' + username + '?'))
-            {
+               confirm('Do you really wan\'t unblock ' + username + '?')) {
                 unblockUser(username);
             }
         };
@@ -179,8 +178,7 @@
         hideButton.onclick = function()
         {
             if(skipConfirmationDialog ||
-               confirm('Are you sure to block ' + username + '?'))
-            {
+               confirm('Are you sure to block ' + username + '?')) {
                 blockUser(username);
             }
         };
@@ -342,7 +340,6 @@
 
         // Handle the g4/latest.php page with this.
         var galleryBox = document.getElementsByClassName('g-box-contents');
-        var i;
 
         // Check if the class exists
         if(galleryBox.length == 0)
@@ -363,7 +360,7 @@
         // Iterate over galley entries.
         var items = galleryBox.getElementsByClassName('detail-item');
 
-        for(i = 0; i < items.length; i++) {
+        for(var i = 0; i < items.length; i++) {
 
             // We'll just assume that the first user link is the user that posted it.
             // Be careful, because this can also point to comments made by users.
