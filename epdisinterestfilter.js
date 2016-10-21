@@ -328,6 +328,16 @@
     function refreshG4Messages()
     {
         logAdd('Function: refreshG4Messages()');
+
+        // Get the MainContainer
+        var mainContainer = document.getElementsByClassName('g-box-contents');
+
+        // Check if the class exists
+        if(mainContainer.length == 0)
+            return;
+
+        // Use the first occur of the class
+        mainContainer = mainContainer[0];
         // todo implement
     }
 
@@ -339,18 +349,18 @@
         logAdd('Function: refreshG4LatestUpdates()');
 
         // Handle the g4/latest.php page with this.
-        var galleryBox = document.getElementsByClassName('g-box-contents');
+        var mainContainer = document.getElementsByClassName('g-box-contents');
 
         // Check if the class exists
-        if(galleryBox.length == 0)
+        if(mainContainer.length == 0)
             return;
 
         // Use the first occur of the class
-        galleryBox = galleryBox[0];
+        mainContainer = mainContainer[0];
 
         // Create or find the existing unblock button box, then clear it out so we can rebuild it.
-        var unblockButtonBox = unlockButtonContainer('whtb-unblock-box', galleryBox, 'Unblock User (On this Page): ');
-        var globalUnblockButtonBox = unlockButtonContainer('whtb-global-unblock-box', galleryBox, 'Unblock User (Global List): ');
+        var unblockButtonBox = unlockButtonContainer('whtb-unblock-box', mainContainer, 'Unblock User (On this Page): ');
+        var globalUnblockButtonBox = unlockButtonContainer('whtb-global-unblock-box', mainContainer, 'Unblock User (Global List): ');
         // Add Buttons to global List
         createUnblockButtonListFromArray(badUserList, globalUnblockButtonBox);
 
@@ -358,7 +368,7 @@
         removeExistingButtons('whtb-block-button');
 
         // Iterate over galley entries.
-        var items = galleryBox.getElementsByClassName('detail-item');
+        var items = mainContainer.getElementsByClassName('detail-item');
 
         for(var i = 0; i < items.length; i++) {
 
