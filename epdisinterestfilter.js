@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eka's Portal Disinterest Filter
 // @namespace    http://zcxv.com/
-// @version      0.3
+// @version      0.4
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
 // @match        http://aryion.com/g4/*
@@ -345,16 +345,83 @@
     }
 
     /**
-     * todo doc
+     * Refreshes the Tagged Site
      */
     function refreshG4Tagged()
     {
         logAdd('Function: refreshG4Tagged()');
-        // todo implement
+
+        // Get the MainContainer
+        var mainContainer = document.getElementsByClassName('gallery-items');
+
+        // Check if the class exists
+        if(mainContainer.length == 0)
+            return;
+
+        // Use the first occur of the class there more of these containers but the first one is the correct container
+        mainContainer = mainContainer[0];
+
+        // Create or find the existing unblock button box, then clear it out so we can rebuild it.
+        var unblockButtonBox = unlockButtonContainer('whtb-unblock-box', mainContainer, 'Unblock User (On this Page):');
+        var globalUnblockButtonBox = unlockButtonContainer('whtb-global-unblock-box', mainContainer, 'Unblock User (Global List):');
+        // Add Buttons to global List
+        createUnblockButtonListFromArray(badUserList, globalUnblockButtonBox);
+
+        // Clear out existing block buttons from the last iteration.
+        removeExistingButtons('whtb-block-button');
+
+        var items = mainContainer.getElementsByClassName('gallery-item');
+
+        // Generate Block buttons and hide blocked user
+        for(var i = 0; i < items.length; i++) {
+            var userLink = items[i].getElementsByClassName('user-link');
+
+            if(userLink.length > 0) {
+                // Get UserLink and Username
+                userLink = userLink[0];
+                var username = userLink.innerHTML;
+
+                // Hide if user is in list
+                if(badUserList.indexOf(username) != -1) {
+                    items[i].style.display = 'none';
+
+                    // Add to current block list if not in there
+                    if(currentUserHiddenList.indexOf(username) == -1)
+                        currentUserHiddenList.push(username);
+                } else { // Show Block-Button
+                    items[i].style.display = '';
+
+                    // Add Button
+                    var hideButton = createBlockButton(username, false);
+                    hideButton.style.display = 'none';
+                    userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
+
+                    /**
+                     * Makes Block-Button visible
+                     */
+                    items[i].onmouseover = function() {
+                        var blockButton = this.getElementsByClassName('whtb-block-button')[0];
+                        blockButton.style.display = 'inline-block';
+                    };
+
+                    /**
+                     * Makes Block-Button invisible if Mouse go out
+                     */
+                    items[i].onmouseout = function() {
+                        var blockButton = this.getElementsByClassName('whtb-block-button')[0];
+                        blockButton.style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        // Generate the "Unblock button" list at the top. just for user on this page
+        currentUserHiddenList.sort();
+        createUnblockButtonListFromArray(currentUserHiddenList, unblockButtonBox);
     }
 
     /**
-     * todo doc
+     * Refreshes the Message Site
      */
     function refreshG4Messages()
     {
@@ -388,6 +455,7 @@
             var userLink = items[i].getElementsByClassName('user-link');
 
             if(userLink.length > 0) {
+                // Get UserLink and Username
                 userLink = userLink[0];
                 var username = userLink.innerHTML;
 
