@@ -336,7 +336,7 @@
     }
 
     /**
-     * todo doc
+     * Refreshes the Search Site
      */
     function refreshG4Search()
     {
