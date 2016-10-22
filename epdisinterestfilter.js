@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eka's Portal Disinterest Filter
 // @namespace    http://zcxv.com/
-// @version      0.2
+// @version      0.3
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
 // @match        http://aryion.com/g4/*
@@ -182,13 +182,20 @@
      * Creates a Block button with assigned OnClick function
      *
      * @param {string} username - Username of the Block-User for this Button
+     * @param {boolean} displayName - Display the Name on the button? Default is true
      * @returns {Element} - BlockButton
      */
-    function createBlockButton(username)
+    function createBlockButton(username, displayName)
     {
         var hideButton = document.createElement('span');
+        displayName = (typeof displayName === 'undefined') ? true : displayName;
+
+        if(displayName)
+            hideButton.innerHTML = 'Block ' + username;
+        else
+            hideButton.innerHTML = 'Block';
+
         assignButtonCSS(hideButton);
-        hideButton.innerHTML = 'Block ' + username;
         hideButton.className = 'whtb-block-button';
 
         /**
@@ -376,13 +383,6 @@
         // Get all Items
         var items = mainContainer.getElementsByClassName('gallery-item');
 
-        // Declare functions
-        function addButton(username, userLink) {
-            logAdd('Mouse is over: ' + username);
-            var hideButton = createBlockButton(username);
-            userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
-        }
-
         // Generate Block buttons and hide blocked user
         for(var i = 0; i < items.length; i++) {
             var userLink = items[i].getElementsByClassName('user-link');
@@ -402,17 +402,21 @@
                     items[i].style.display = '';
 
                     // Add Button
-                    var hideButton = createBlockButton(username);
+                    var hideButton = createBlockButton(username, false);
                     hideButton.style.display = 'none';
                     userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
 
-                    // Show button if mouse is over the item (do avoid to much buttons for the user)
+                    /**
+                     * Makes Block-Button visible
+                     */
                     items[i].onmouseover = function() {
                         var blockButton = this.getElementsByClassName('whtb-block-button')[0];
                         blockButton.style.display = 'inline-block';
                     };
 
-                    // Hide it if mouse go out of the item
+                    /**
+                     * Makes Block-Button invisible if Mouse go out
+                     */
                     items[i].onmouseout = function() {
                         var blockButton = this.getElementsByClassName('whtb-block-button')[0];
                         blockButton.style.display = 'none';
@@ -424,7 +428,6 @@
         // Generate the "Unblock button" list at the top. just for user on this page
         currentUserHiddenList.sort();
         createUnblockButtonListFromArray(currentUserHiddenList, unblockButtonBox);
-        // todo implement
     }
 
     /**
@@ -486,7 +489,7 @@
                     items[i].style.display = '';
 
                     // Set up the block button.
-                    var hideButton = createBlockButton(username);
+                    var hideButton = createBlockButton(username, true);
 
                     // Stick this right next to the username.
                     userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
