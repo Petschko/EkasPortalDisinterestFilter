@@ -24,7 +24,7 @@
      *
      * @type {boolean} - true if debug is enabled else false
      */
-    var debug = true;
+    var debug = false;
 
     /**
      * Contains all users we have blocked
