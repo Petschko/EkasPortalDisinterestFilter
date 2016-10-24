@@ -224,19 +224,18 @@
      * Creates a button to show/hide the hideElement
      *
      * @param {Element} hideElement - Element to Hide/Show
-     * @param {string|int} number - Number of usual the amount of unblock buttons in the hidden/shown area
      * @returns {Element} - Show/Hide Button
      */
-    function createShowHideButton(hideElement, number)
+    function createShowHideButton(hideElement)
     {
         var showHideButton = document.createElement('span');
         assignButtonCSS(showHideButton);
 
         // Initial text depends on status of the element
         if(hideElement.style.display == 'none')
-            showHideButton.innerHTML = 'Show (' + number + ')';
+            showHideButton.innerHTML = 'Show';
         else
-            showHideButton.innerHTML = 'Hide (' + number + ')';
+            showHideButton.innerHTML = 'Hide';
 
         /**
          * Hide/Shows the Element also changes the Text on the Button
@@ -245,10 +244,10 @@
         {
             if(hideElement.style.display == 'none') {
                 hideElement.style.display = '';
-                showHideButton.innerHTML = 'Hide (' + number + ')';
+                showHideButton.innerHTML = 'Hide';
             } else {
                 hideElement.style.display = 'none';
-                showHideButton.innerHTML = 'Show (' + number + ')';
+                showHideButton.innerHTML = 'Show';
             }
         };
 
@@ -276,7 +275,7 @@
             newUnblockButtonBox.innerHTML = text;
             newUnblockButtonBox.style.padding = '2px 4px';
             newUnblockButtonBox.style.margin = '3px 0';
-            newUnblockButtonBox.appendChild(createShowHideButton(unblockButtonArea, 0));
+            newUnblockButtonBox.appendChild(createShowHideButton(unblockButtonArea));
             newUnblockButtonBox.appendChild(unblockButtonArea);
             insertBefore.insertBefore(newUnblockButtonBox, insertBefore.firstChild);
 
