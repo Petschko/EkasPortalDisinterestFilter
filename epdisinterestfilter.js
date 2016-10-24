@@ -20,6 +20,13 @@
     var skipConfirmationDialog = false;
 
     /**
+     * Option to disable MouseOver-Buttons and use all-time shown buttons
+     *
+     * @type {boolean} - true if use MouseOver-Buttons else false
+     */
+    var useMouseOverButtons = true;
+
+    /**
      * Contains if debug is enabled
      *
      * @type {boolean} - true if debug is enabled else false
@@ -319,7 +326,8 @@
      * @param {Document|Element} element - Content-Element
      * @param {boolean} mouseOverButtons - Use mouse over buttons
      */
-    function handleItem(element, mouseOverButtons) {
+    function handleItem(element, mouseOverButtons)
+    {
         var userLink = element.getElementsByClassName('user-link');
 
         if(userLink.length == 0)
@@ -380,62 +388,31 @@
 
         // Check the function we need to build or stuff in use the <title> content to check
         if(stringStartWith(document.title, 'g4 :: Latest Updates'))
-            refreshG4LatestUpdates();
+            refreshSiteByParam('g-box-contents', 'detail-item', false);
 
         if(stringStartWith(document.title, 'g4 :: Messages'))
-            refreshG4Messages();
+            refreshSiteByParam('g-box-contents', 'gallery-item', true);
 
         if(stringStartWith(document.title, 'g4 :: Tagged'))
-            refreshG4Tagged();
+            refreshSiteByParam('gallery-items', 'gallery-item', true);
 
         if(stringStartWith(document.title, 'g4 :: Search Results'))
-            refreshG4Search();
+            refreshSiteByParam('g-box-contents', 'gallery-item', true);
     }
 
     /**
-     * Refreshes the Search Site
+     * Refreshes the page by using params of specific elements
+     *
+     * @param {string} mainContainerClassName - Class name of the Main-Container(s) the first of them is always the right one
+     * @param {string} itemClassName - Class name of Content-Elements
+     * @param {boolean} allowMouseOver - Allow use of MouseOver-Buttons here
      */
-    function refreshG4Search()
-    {
-        logAdd('Function: refreshG4Search()');
-
-        // Get the MainContainer
-        var mainContainer = document.getElementById('gallery-items');
-
-        // Check if the Id exists
-        if(mainContainer === null)
-            return;
-
-        // Create or find the existing unblock button box, then clear it out so we can rebuild it.
-        var unblockButtonBox = unlockButtonContainer('whtb-unblock-box', mainContainer, 'Unblock User (On this Page):');
-        var globalUnblockButtonBox = unlockButtonContainer('whtb-global-unblock-box', mainContainer, 'Unblock User (Global List):');
-        // Add Buttons to global List
-        createUnblockButtonListFromArray(badUserList, globalUnblockButtonBox);
-
-        // Clear out existing block buttons from the last iteration.
-        removeExistingButtons('whtb-block-button');
-
-        // Get all Items
-        var items = mainContainer.getElementsByClassName('gallery-item');
-
-        // Generate Block buttons and hide blocked user
-        for(var i = 0; i < items.length; i++)
-            handleItem(items[i], true);
-
-        // Generate the "Unblock button" list at the top. just for user on this page
-        currentUserHiddenList.sort();
-        createUnblockButtonListFromArray(currentUserHiddenList, unblockButtonBox);
-    }
-
-    /**
-     * Refreshes the Tagged Site
-     */
-    function refreshG4Tagged()
+    function refreshSiteByParam(mainContainerClassName, itemClassName, allowMouseOver)
     {
         logAdd('Function: refreshG4Tagged()');
 
         // Get the MainContainer
-        var mainContainer = document.getElementsByClassName('gallery-items');
+        var mainContainer = document.getElementsByClassName(mainContainerClassName);
 
         // Check if the class exists
         if(mainContainer.length == 0)
@@ -454,87 +431,11 @@
         removeExistingButtons('whtb-block-button');
 
         // Get all items
-        var items = mainContainer.getElementsByClassName('gallery-item');
+        var items = mainContainer.getElementsByClassName(itemClassName);
 
         // Generate Block buttons and hide blocked user
         for(var i = 0; i < items.length; i++)
-            handleItem(items[i], true);
-
-        // Generate the "Unblock button" list at the top. just for user on this page
-        currentUserHiddenList.sort();
-        createUnblockButtonListFromArray(currentUserHiddenList, unblockButtonBox);
-    }
-
-    /**
-     * Refreshes the Message Site
-     */
-    function refreshG4Messages()
-    {
-        logAdd('Function: refreshG4Messages()');
-
-        // Get the MainContainer
-        var mainContainer = document.getElementsByClassName('g-box-contents');
-
-        // Check if the class exists
-        if(mainContainer.length == 0)
-            return;
-
-        // Use the first occur of the class there more of these containers but the first one is the correct container
-        mainContainer = mainContainer[0];
-
-        // Create or find the existing unblock button box, then clear it out so we can rebuild it.
-        var unblockButtonBox = unlockButtonContainer('whtb-unblock-box', mainContainer, 'Unblock User (On this Page):');
-        var globalUnblockButtonBox = unlockButtonContainer('whtb-global-unblock-box', mainContainer, 'Unblock User (Global List):');
-        // Add Buttons to global List
-        createUnblockButtonListFromArray(badUserList, globalUnblockButtonBox);
-        // todo add button 'remove items from blocked user'
-
-        // Clear out existing block buttons from the last iteration.
-        removeExistingButtons('whtb-block-button');
-
-        // Get all Items
-        var items = mainContainer.getElementsByClassName('gallery-item');
-
-        // Generate Block buttons and hide blocked user
-        for(var i = 0; i < items.length; i++)
-            handleItem(items[i], true);
-
-        // Generate the "Unblock button" list at the top. just for user on this page
-        currentUserHiddenList.sort();
-        createUnblockButtonListFromArray(currentUserHiddenList, unblockButtonBox);
-    }
-
-    /**
-     * Refreshes the Lastest Update Site
-     */
-    function refreshG4LatestUpdates()
-    {
-        logAdd('Function: refreshG4LatestUpdates()');
-
-        // Handle the g4/latest.php page with this.
-        var mainContainer = document.getElementsByClassName('g-box-contents');
-
-        // Check if the class exists
-        if(mainContainer.length == 0)
-            return;
-
-        // Use the first occur of the class
-        mainContainer = mainContainer[0];
-
-        // Create or find the existing unblock button box, then clear it out so we can rebuild it.
-        var unblockButtonBox = unlockButtonContainer('whtb-unblock-box', mainContainer, 'Unblock User (On this Page):');
-        var globalUnblockButtonBox = unlockButtonContainer('whtb-global-unblock-box', mainContainer, 'Unblock User (Global List):');
-        // Add Buttons to global List
-        createUnblockButtonListFromArray(badUserList, globalUnblockButtonBox);
-
-        // Clear out existing block buttons from the last iteration.
-        removeExistingButtons('whtb-block-button');
-
-        // Iterate over galley entries.
-        var items = mainContainer.getElementsByClassName('detail-item');
-
-        for(var i = 0; i < items.length; i++)
-            handleItem(items[i], false);
+            handleItem(items[i], ((allowMouseOver) ? useMouseOverButtons : false));
 
         // Generate the "Unblock button" list at the top. just for user on this page
         currentUserHiddenList.sort();
