@@ -314,6 +314,63 @@
     }
 
     /**
+     * Hide blocked User-Content and add a block button to non blocked User-Content
+     *
+     * @param {Document|Element} element - Content-Element
+     * @param {boolean} mouseOverButtons - Use mouse over buttons
+     */
+    function handleItem(element, mouseOverButtons) {
+        var userLink = element.getElementsByClassName('user-link');
+
+        if(userLink.length == 0)
+            return;
+
+        // Get UserLink and Username
+        userLink = userLink[0];
+        var username = userLink.innerHTML;
+
+        // Hide if user is in list
+        if(badUserList.indexOf(username) != -1) {
+            element.style.display = 'none';
+
+            // Add to current block list if not in there
+            if(currentUserHiddenList.indexOf(username) == -1)
+                currentUserHiddenList.push(username);
+        } else { // Show Block-Button
+            var hideButton;
+            element.style.display = '';
+
+            // Add Button
+            if(mouseOverButtons) {
+                hideButton = createBlockButton(username, false);
+                hideButton.style.display = 'none';
+                userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
+
+                /**
+                 * Makes Block-Button visible
+                 */
+                element.onmouseover = function() {
+                    var blockButton = this.getElementsByClassName('whtb-block-button')[0];
+                    blockButton.style.display = 'inline-block';
+                };
+
+                /**
+                 * Makes Block-Button invisible if Mouse go out
+                 */
+                element.onmouseout = function() {
+                    var blockButton = this.getElementsByClassName('whtb-block-button')[0];
+                    blockButton.style.display = 'none';
+                }
+            } else {
+                hideButton = createBlockButton(username, true);
+
+                // Stick this right next to the username.
+                userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
+            }
+        }
+    }
+
+    /**
      * Refresh OUR data on the page. (Doesn't cause an actual page request.)
      */
     function refreshPage()
@@ -362,47 +419,8 @@
         var items = mainContainer.getElementsByClassName('gallery-item');
 
         // Generate Block buttons and hide blocked user
-        for(var i = 0; i < items.length; i++) {
-            var userLink = items[i].getElementsByClassName('user-link');
-
-            if(userLink.length > 0) {
-                // Get UserLink and Username
-                userLink = userLink[0];
-                var username = userLink.innerHTML;
-
-                // Hide if user is in list
-                if(badUserList.indexOf(username) != -1) {
-                    items[i].style.display = 'none';
-
-                    // Add to current block list if not in there
-                    if(currentUserHiddenList.indexOf(username) == -1)
-                        currentUserHiddenList.push(username);
-                } else { // Show Block-Button
-                    items[i].style.display = '';
-
-                    // Add Button
-                    var hideButton = createBlockButton(username, false);
-                    hideButton.style.display = 'none';
-                    userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
-
-                    /**
-                     * Makes Block-Button visible
-                     */
-                    items[i].onmouseover = function() {
-                        var blockButton = this.getElementsByClassName('whtb-block-button')[0];
-                        blockButton.style.display = 'inline-block';
-                    };
-
-                    /**
-                     * Makes Block-Button invisible if Mouse go out
-                     */
-                    items[i].onmouseout = function() {
-                        var blockButton = this.getElementsByClassName('whtb-block-button')[0];
-                        blockButton.style.display = 'none';
-                    }
-                }
-            }
-        }
+        for(var i = 0; i < items.length; i++)
+            handleItem(items[i], true);
 
         // Generate the "Unblock button" list at the top. just for user on this page
         currentUserHiddenList.sort();
@@ -439,47 +457,8 @@
         var items = mainContainer.getElementsByClassName('gallery-item');
 
         // Generate Block buttons and hide blocked user
-        for(var i = 0; i < items.length; i++) {
-            var userLink = items[i].getElementsByClassName('user-link');
-
-            if(userLink.length > 0) {
-                // Get UserLink and Username
-                userLink = userLink[0];
-                var username = userLink.innerHTML;
-
-                // Hide if user is in list
-                if(badUserList.indexOf(username) != -1) {
-                    items[i].style.display = 'none';
-
-                    // Add to current block list if not in there
-                    if(currentUserHiddenList.indexOf(username) == -1)
-                        currentUserHiddenList.push(username);
-                } else { // Show Block-Button
-                    items[i].style.display = '';
-
-                    // Add Button
-                    var hideButton = createBlockButton(username, false);
-                    hideButton.style.display = 'none';
-                    userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
-
-                    /**
-                     * Makes Block-Button visible
-                     */
-                    items[i].onmouseover = function() {
-                        var blockButton = this.getElementsByClassName('whtb-block-button')[0];
-                        blockButton.style.display = 'inline-block';
-                    };
-
-                    /**
-                     * Makes Block-Button invisible if Mouse go out
-                     */
-                    items[i].onmouseout = function() {
-                        var blockButton = this.getElementsByClassName('whtb-block-button')[0];
-                        blockButton.style.display = 'none';
-                    }
-                }
-            }
-        }
+        for(var i = 0; i < items.length; i++)
+            handleItem(items[i], true);
 
         // Generate the "Unblock button" list at the top. just for user on this page
         currentUserHiddenList.sort();
@@ -517,47 +496,8 @@
         var items = mainContainer.getElementsByClassName('gallery-item');
 
         // Generate Block buttons and hide blocked user
-        for(var i = 0; i < items.length; i++) {
-            var userLink = items[i].getElementsByClassName('user-link');
-
-            if(userLink.length > 0) {
-                // Get UserLink and Username
-                userLink = userLink[0];
-                var username = userLink.innerHTML;
-
-                // Hide if user is in list
-                if(badUserList.indexOf(username) != -1) {
-                    items[i].style.display = 'none';
-
-                    // Add to current block list if not in there
-                    if(currentUserHiddenList.indexOf(username) == -1)
-                        currentUserHiddenList.push(username);
-                } else { // Show Block-Button
-                    items[i].style.display = '';
-
-                    // Add Button
-                    var hideButton = createBlockButton(username, false);
-                    hideButton.style.display = 'none';
-                    userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
-
-                    /**
-                     * Makes Block-Button visible
-                     */
-                    items[i].onmouseover = function() {
-                        var blockButton = this.getElementsByClassName('whtb-block-button')[0];
-                        blockButton.style.display = 'inline-block';
-                    };
-
-                    /**
-                     * Makes Block-Button invisible if Mouse go out
-                     */
-                    items[i].onmouseout = function() {
-                        var blockButton = this.getElementsByClassName('whtb-block-button')[0];
-                        blockButton.style.display = 'none';
-                    }
-                }
-            }
-        }
+        for(var i = 0; i < items.length; i++)
+            handleItem(items[i], true);
 
         // Generate the "Unblock button" list at the top. just for user on this page
         currentUserHiddenList.sort();
@@ -593,43 +533,8 @@
         // Iterate over galley entries.
         var items = mainContainer.getElementsByClassName('detail-item');
 
-        for(var i = 0; i < items.length; i++) {
-
-            // We'll just assume that the first user link is the user that posted it.
-            // Be careful, because this can also point to comments made by users.
-            // Note: user-comments can detected by searching for <this>.parent.parent.parent(classname) == comment
-            var userLink = items[i].getElementsByClassName('user-link');
-
-            if(userLink.length > 0) {
-
-                userLink = userLink[0];
-
-                var username = userLink.innerHTML;
-
-                if(badUserList.indexOf(username) != -1) {
-
-                    // Found someone we want to block. Hide the element and add to our
-                    // list of unblock buttons.
-                    items[i].style.display = 'none';
-
-                    if(currentUserHiddenList.indexOf(username) == -1)
-                        currentUserHiddenList.push(username);
-
-                } else {
-
-                    // This user is fine, but just in case we want to block them, we
-                    // better add a block button. We could also be coming in from an
-                    // unblock command, so we need to reset the visibility.
-                    items[i].style.display = '';
-
-                    // Set up the block button.
-                    var hideButton = createBlockButton(username, true);
-
-                    // Stick this right next to the username.
-                    userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
-                }
-            }
-        }
+        for(var i = 0; i < items.length; i++)
+            handleItem(items[i], false);
 
         // Generate the "Unblock button" list at the top. just for user on this page
         currentUserHiddenList.sort();
