@@ -224,18 +224,19 @@
      * Creates a button to show/hide the hideElement
      *
      * @param {Element} hideElement - Element to Hide/Show
+     * @param {string|int} number - Number of usual the amount of unblock buttons in the hidden/shown area
      * @returns {Element} - Show/Hide Button
      */
-    function createShowHideButton(hideElement)
+    function createShowHideButton(hideElement, number)
     {
         var showHideButton = document.createElement('span');
         assignButtonCSS(showHideButton);
 
         // Initial text depends on status of the element
         if(hideElement.style.display == 'none')
-            showHideButton.innerHTML = 'Show';
+            showHideButton.innerHTML = 'Show (' + number + ')';
         else
-            showHideButton.innerHTML = 'Hide';
+            showHideButton.innerHTML = 'Hide (' + number + ')';
 
         /**
          * Hide/Shows the Element also changes the Text on the Button
@@ -244,10 +245,10 @@
         {
             if(hideElement.style.display == 'none') {
                 hideElement.style.display = '';
-                showHideButton.innerHTML = 'Hide';
+                showHideButton.innerHTML = 'Hide (' + number + ')';
             } else {
                 hideElement.style.display = 'none';
-                showHideButton.innerHTML = 'Show';
+                showHideButton.innerHTML = 'Show (' + number + ')';
             }
         };
 
@@ -275,7 +276,7 @@
             newUnblockButtonBox.innerHTML = text;
             newUnblockButtonBox.style.padding = '2px 4px';
             newUnblockButtonBox.style.margin = '3px 0';
-            newUnblockButtonBox.appendChild(createShowHideButton(unblockButtonArea));
+            newUnblockButtonBox.appendChild(createShowHideButton(unblockButtonArea, 0));
             newUnblockButtonBox.appendChild(unblockButtonArea);
             insertBefore.insertBefore(newUnblockButtonBox, insertBefore.firstChild);
 
@@ -410,8 +411,6 @@
      */
     function refreshSiteByParam(mainContainerClassName, targetContainer, itemClassName, allowMouseOver)
     {
-        logAdd('Function: refreshG4Tagged()');
-
         // Get the MainContainer
         var mainContainer = document.getElementsByClassName(mainContainerClassName);
 
