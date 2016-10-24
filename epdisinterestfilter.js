@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eka's Portal Disinterest Filter
 // @namespace    http://zcxv.com/
-// @version      0.5
+// @version      0.6
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
 // @match        http://aryion.com/g4/*
@@ -285,10 +285,10 @@
         {
             if(showBlockedContent) {
                 showBlockedContent = false;
-                this.innerHTML = 'Hide blocked content';
+                this.innerHTML = 'Temporary re-display blocked content';
             } else {
                 showBlockedContent = true;
-                this.innerHTML = 'Temporary re-display blocked content';
+                this.innerHTML = 'Hide blocked content';
             }
 
             // Refresh the page to update the content
