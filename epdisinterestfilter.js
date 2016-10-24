@@ -388,26 +388,27 @@
 
         // Check the function we need to build or stuff in use the <title> content to check
         if(stringStartWith(document.title, 'g4 :: Latest Updates'))
-            refreshSiteByParam('g-box-contents', 'detail-item', false);
+            refreshSiteByParam('g-box-contents', 0, 'detail-item', false);
 
         if(stringStartWith(document.title, 'g4 :: Messages'))
-            refreshSiteByParam('g-box-contents', 'gallery-item', true);
+            refreshSiteByParam('g-box-contents', 0, 'gallery-item', true);
 
         if(stringStartWith(document.title, 'g4 :: Tagged'))
-            refreshSiteByParam('gallery-items', 'gallery-item', true);
+            refreshSiteByParam('gallery-items', 0, 'gallery-item', true);
 
         if(stringStartWith(document.title, 'g4 :: Search Results'))
-            refreshSiteByParam('g-box-contents', 'gallery-item', true);
+            refreshSiteByParam('g-box-contents', 1, 'gallery-item', true);
     }
 
     /**
      * Refreshes the page by using params of specific elements
      *
-     * @param {string} mainContainerClassName - Class name of the Main-Container(s) the first of them is always the right one
+     * @param {string} mainContainerClassName - Class name of the Main-Container(s)
+     * @param {int} targetContainer - Target Container of the class (starts with 0) the first (0) of them is usually the right one
      * @param {string} itemClassName - Class name of Content-Elements
      * @param {boolean} allowMouseOver - Allow use of MouseOver-Buttons here
      */
-    function refreshSiteByParam(mainContainerClassName, itemClassName, allowMouseOver)
+    function refreshSiteByParam(mainContainerClassName, targetContainer, itemClassName, allowMouseOver)
     {
         logAdd('Function: refreshG4Tagged()');
 
@@ -415,11 +416,11 @@
         var mainContainer = document.getElementsByClassName(mainContainerClassName);
 
         // Check if the class exists
-        if(mainContainer.length == 0)
+        if(mainContainer.length < targetContainer)
             return;
 
         // Use the first occur of the class there more of these containers but the first one is the correct container
-        mainContainer = mainContainer[0];
+        mainContainer = mainContainer[targetContainer];
 
         // Create or find the existing unblock button box, then clear it out so we can rebuild it.
         var unblockButtonBox = unlockButtonContainer('whtb-unblock-box', mainContainer, 'Unblock User (On this Page):');
