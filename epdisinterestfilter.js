@@ -48,6 +48,13 @@
     var currentUserHiddenList = [];
 
     /**
+     * DON'T CHANGE! Contains the value if you want to see blocked content (Changes via button action)
+     *
+     * @type {boolean} - true shows blocked content
+     */
+    var showBlockedContent = false;
+
+    /**
      * Resets the current Block User List
      */
     function resetCurrentBlockUser() {
@@ -244,14 +251,51 @@
         {
             if(hideElement.style.display == 'none') {
                 hideElement.style.display = '';
-                showHideButton.innerHTML = 'Hide';
+                this.innerHTML = 'Hide';
             } else {
                 hideElement.style.display = 'none';
-                showHideButton.innerHTML = 'Show';
+                this.innerHTML = 'Show';
             }
         };
 
         return showHideButton;
+    }
+
+    /**
+     * Creates a button that allow you temporary show blocked content
+     *
+     * @returns {Element} - Temp show all Button
+     */
+    function createShowContentButton()
+    {
+        var button = document.createElement('span');
+        assignButtonCSS(button);
+        button.className = 'whtb-button-reshow-blocked-content';
+
+        // Initial text depends on the status of showBlockedContent
+        if(showBlockedContent)
+            button.innerHTML = 'Hide blocked content';
+        else
+            button.innerHTML = 'Temporary re-display blocked content';
+
+        /**
+         * Switches the option if blocked content will be shown or not
+         */
+        button.onclick = function()
+        {
+            if(showBlockedContent) {
+                showBlockedContent = false;
+                this.innerHTML = 'Hide blocked content';
+            } else {
+                showBlockedContent = true;
+                this.innerHTML = 'Temporary re-display blocked content';
+            }
+
+            // Refresh the page to update the content
+            refreshPage();
+        };
+
+        return button;
     }
 
     /**
@@ -339,7 +383,12 @@
 
         // Hide if user is in list
         if(badUserList.indexOf(username) != -1) {
-            element.style.display = 'none';
+            if(showBlockedContent) {
+                element.style.display = '';
+                element.style.backgroundColor = '#AA0000';
+                element.style.border = '4px solid #000000';
+            } else
+                element.style.display = 'none';
 
             // Add to current block list if not in there
             if(currentUserHiddenList.indexOf(username) == -1)
@@ -347,6 +396,9 @@
         } else { // Show Block-Button
             var hideButton;
             element.style.display = '';
+            // Remove if there is some left from temp shown content
+            element.style.backgroundColor = '';
+            element.style.border = '';
 
             // Add Button
             if(mouseOverButtons) {
@@ -437,8 +489,11 @@
             handleItem(items[i], ((allowMouseOver) ? useMouseOverButtons : false));
 
         // Generate the "Unblock button" list at the top. just for user on this page
-        currentUserHiddenList.sort();
         createUnblockButtonListFromArray(currentUserHiddenList, unblockButtonBox);
+
+        // Add temp show button to box
+        if(mainContainer.getElementsByClassName('whtb-button-reshow-blocked-content').length < 1)
+            mainContainer.insertBefore(createShowContentButton(), mainContainer.firstChild);
     }
 
     // ------------------------------------------------
