@@ -30,7 +30,7 @@ all. But at least it'll save you some scrolling.
 ## Credits
 ----
 * Made By Kiri Nakatomi (aka WHTB).
-* Variable declaration fix by tigercloud.
+* Some improvements like using it on more different pages by tigercloud
 
 ## Contact
 ----

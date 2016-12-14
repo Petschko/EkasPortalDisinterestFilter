@@ -496,6 +496,15 @@
             mainContainer.insertBefore(createShowContentButton(), mainContainer.firstChild);
     }
 
+    /**
+     * Creates optional event listener on a page
+     */
+    function createEventListener() {
+        if(stringStartWith(document.title, 'g4 :: Messages')) {
+            // todo add listener if I have more messages to test this...
+        }
+    }
+
     // ------------------------------------------------
 
     // Loads settings
@@ -503,5 +512,7 @@
 
     // Now just do an initial refresh to show our optional stuff.
     refreshPage();
+    // Check if we need to add optional event listeners - but only 1 time
+    createEventListener();
 
 })();
