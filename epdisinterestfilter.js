@@ -450,6 +450,10 @@
 
         if(stringStartWith(document.title, 'g4 :: Search Results'))
             refreshSiteByParam('g-box-contents', 1, 'gallery-item', true);
+
+        if(document.title == "Eka's Portal") {
+            // todo handle main page
+        }
     }
 
     /**
