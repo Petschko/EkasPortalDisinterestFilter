@@ -496,6 +496,26 @@
             mainContainer.insertBefore(createShowContentButton(), mainContainer.firstChild);
     }
 
+    /**
+     * Creates optional event listener on a page for ajax load
+     */
+    function createEventListener() {
+        if(stringStartWith(document.title, 'g4 :: Messages')) {
+            var elements = document.getElementsByClassName('msg-loader');
+
+            for(var i = 0; i < elements.length; i++) {
+				/**
+                 * Adds a refresh function if clicked on show more
+				 */
+				elements[i].onclick = function() {
+                    setTimeout(function(){
+                        refreshPage();
+                    }, 2000);
+                }
+            }
+        }
+    }
+
     // ------------------------------------------------
 
     // Loads settings
@@ -503,5 +523,7 @@
 
     // Now just do an initial refresh to show our optional stuff.
     refreshPage();
+    // Check if we need to add optional event listeners - but only 1 time
+    createEventListener();
 
 })();
