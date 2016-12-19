@@ -497,11 +497,22 @@
     }
 
     /**
-     * Creates optional event listener on a page
+     * Creates optional event listener on a page for ajax load
      */
     function createEventListener() {
         if(stringStartWith(document.title, 'g4 :: Messages')) {
-            // todo add listener if I have more messages to test this...
+            var elements = document.getElementsByClassName('msg-loader');
+
+            for(var i = 0; i < elements.length; i++) {
+				/**
+                 * Adds a refresh function if clicked on show more
+				 */
+				elements[i].onclick = function() {
+                    setTimeout(function(){
+                        refreshPage();
+                    }, 2000);
+                }
+            }
         }
     }
 
