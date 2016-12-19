@@ -499,16 +499,19 @@
     /**
      * Creates optional event listener on a page for ajax load
      */
-    function createEventListener() {
+    function createEventListener()
+    {
         if(stringStartWith(document.title, 'g4 :: Messages')) {
             var elements = document.getElementsByClassName('msg-loader');
 
             for(var i = 0; i < elements.length; i++) {
-				/**
+                /**
                  * Adds a refresh function if clicked on show more
-				 */
-				elements[i].onclick = function() {
-                    setTimeout(function(){
+                 */
+                elements[i].onclick = function()
+                {
+                    setTimeout(function()
+                    {
                         refreshPage();
                     }, 2000);
                 }
