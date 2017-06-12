@@ -3,7 +3,7 @@
 // @namespace    http://zcxv.com/
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
-// @version      0.6.1
+// @version      0.7
 // @encoding     utf-8
 // @licence      https://raw.githubusercontent.com/Petschko/EkasPortalDisinterestFilter/master/LICENSE
 // @homepage     https://github.com/Petschko/EkasPortalDisinterestFilter
