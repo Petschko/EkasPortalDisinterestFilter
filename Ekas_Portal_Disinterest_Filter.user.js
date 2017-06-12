@@ -1,9 +1,16 @@
 // ==UserScript==
 // @name         Eka's Portal Disinterest Filter
 // @namespace    http://zcxv.com/
-// @version      0.6.1
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
+// @version      0.6.1
+// @encoding     utf-8
+// @licence      https://raw.githubusercontent.com/Petschko/EkasPortalDisinterestFilter/master/LICENSE
+// @homepage     https://github.com/Petschko/EkasPortalDisinterestFilter
+// @supportURL   https://github.com/Petschko/EkasPortalDisinterestFilter/issues
+// @contactURL   https://github.com/Petschko/EkasPortalDisinterestFilter#contact
+// @updateURL    https://github.com/Petschko/EkasPortalDisinterestFilter/raw/master/Ekas_Portal_Disinterest_Filter.user.js
+// @downloadURL  https://github.com/Petschko/EkasPortalDisinterestFilter/raw/master/Ekas_Portal_Disinterest_Filter.user.js
 // @match        http://aryion.com/g4/*
 // @match        https://aryion.com/g4/*
 // @grant        none
