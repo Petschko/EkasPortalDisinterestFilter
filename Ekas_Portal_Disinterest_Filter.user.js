@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eka's Portal Disinterest Filter
 // @namespace    http://zcxv.com/
-// @version      0.6
+// @version      0.6.1
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
 // @match        http://aryion.com/g4/*
@@ -450,6 +450,10 @@
 
         if(stringStartWith(document.title, 'g4 :: Search Results'))
             refreshSiteByParam('g-box-contents', 1, 'gallery-item', true);
+
+        if(document.title == "Eka's Portal") {
+            // todo handle main page
+        }
     }
 
     /**
@@ -499,16 +503,19 @@
     /**
      * Creates optional event listener on a page for ajax load
      */
-    function createEventListener() {
+    function createEventListener()
+    {
         if(stringStartWith(document.title, 'g4 :: Messages')) {
             var elements = document.getElementsByClassName('msg-loader');
 
             for(var i = 0; i < elements.length; i++) {
-				/**
+                /**
                  * Adds a refresh function if clicked on show more
-				 */
-				elements[i].onclick = function() {
-                    setTimeout(function(){
+                 */
+                elements[i].onclick = function()
+                {
+                    setTimeout(function()
+                    {
                         refreshPage();
                     }, 2000);
                 }
