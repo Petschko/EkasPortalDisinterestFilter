@@ -3,7 +3,7 @@
 // @namespace    http://zcxv.com/
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
-// @version      0.7
+// @version      0.7.1
 // @encoding     utf-8
 // @licence      https://raw.githubusercontent.com/Petschko/EkasPortalDisinterestFilter/master/LICENSE
 // @homepage     https://github.com/Petschko/EkasPortalDisinterestFilter
@@ -274,7 +274,7 @@
 	 * Check if a unlock Button-container is available if not create it
 	 *
 	 * @param {string} className - Class Name of the unlock Button-Container
-	 * @param {Element} insertBefore - The element where to place the Button-Container(before element)
+	 * @param {NodeList|Element} insertBefore - The element where to place the Button-Container(before element)
 	 * @param {string} text - Text to describe the Content
 	 * @returns {Element} - The unlock Button-Container
 	 */
@@ -353,8 +353,8 @@
 		if(badUserList.indexOf(username) !== -1) {
 			if(showBlockedContent) {
 				element.style.display = '';
-				element.style.backgroundColor = '#AA0000';
-				element.style.border = '4px solid #000000';
+				element.style.backgroundColor = 'rgba(170, 0, 0, 0.13)';
+				element.style.border = '4px solid #FF0000';
 			} else
 				element.style.display = 'none';
 
