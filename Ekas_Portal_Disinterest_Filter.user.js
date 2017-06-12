@@ -152,32 +152,14 @@
 	}
 
 	/**
-	 * Assign CSS-Styles, so that the Element looks like a button
-	 *
-	 * @param {Element} element - Element where to add CSS
-	 */
-	function assignButtonCSS(element) {
-		element.style.color = '#000000';
-		element.style.border = '1px solid #2d37ff';
-		element.style.backgroundColor = '#FFFFFF';
-		element.style.borderRadius = '4px';
-		element.style.display = 'inline-block';
-		element.style.padding = '2px 4px';
-		element.style.background = 'linear-gradient(#E0E0E0, #B0B0B0)';
-		element.style.cursor = 'pointer';
-		element.style.margin = '3px';
-		// todo make better style
-	}
-
-	/**
 	 * Creates a UnBlock button with assigned OnClick function
 	 *
 	 * @param {string} username - Username of the UnBlock-User for this Button
 	 * @returns {Element} - UnBlock-Button
 	 */
 	function createUnBlockButton(username) {
-		var restoreButton = document.createElement('span');
-		assignButtonCSS(restoreButton);
+		var restoreButton = document.createElement('button');
+		restoreButton.type = 'button';
 		restoreButton.innerHTML = username;
 
 		/**
@@ -199,7 +181,8 @@
 	 * @returns {Element} - BlockButton
 	 */
 	function createBlockButton(username, displayName) {
-		var hideButton = document.createElement('span');
+		var hideButton = document.createElement('button');
+		hideButton.type = 'button';
 		displayName = (typeof displayName === 'undefined') ? true : displayName;
 
 		if(displayName)
@@ -207,7 +190,6 @@
 		else
 			hideButton.innerHTML = 'Block';
 
-		assignButtonCSS(hideButton);
 		hideButton.className = 'whtb-block-button';
 
 		/**
@@ -228,8 +210,8 @@
 	 * @returns {Element} - Show/Hide Button
 	 */
 	function createShowHideButton(hideElement) {
-		var showHideButton = document.createElement('span');
-		assignButtonCSS(showHideButton);
+		var showHideButton = document.createElement('button');
+		showHideButton.type = 'button';
 
 		// Initial text depends on status of the element
 		if(hideElement.style.display === 'none')
@@ -259,8 +241,8 @@
 	 * @returns {Element} - Temp show all Button
 	 */
 	function createShowContentButton() {
-		var button = document.createElement('span');
-		assignButtonCSS(button);
+		var button = document.createElement('button');
+		button.type = 'button';
 		button.className = 'whtb-button-reshow-blocked-content';
 
 		// Initial text depends on the status of showBlockedContent
