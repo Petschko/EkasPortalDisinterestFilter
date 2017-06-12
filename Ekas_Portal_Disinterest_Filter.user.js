@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eka's Portal Disinterest Filter
 // @namespace    http://zcxv.com/
-// @version      0.6
+// @version      0.6.1
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
 // @match        http://aryion.com/g4/*
