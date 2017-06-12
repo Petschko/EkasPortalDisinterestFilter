@@ -353,8 +353,8 @@
 		if(badUserList.indexOf(username) !== -1) {
 			if(showBlockedContent) {
 				element.style.display = '';
-				element.style.backgroundColor = '#AA0000';
-				element.style.border = '4px solid #000000';
+				element.style.backgroundColor = 'rgba(170, 0, 0, 0.13)';
+				element.style.border = '4px solid #FF0000';
 			} else
 				element.style.display = 'none';
 
