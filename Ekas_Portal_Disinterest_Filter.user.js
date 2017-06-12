@@ -71,16 +71,14 @@
 	/**
 	 * Save the bad user list to local storage.
 	 */
-	function saveData()
-	{
+	function saveData() {
 		localStorage.setItem('whtb-blocklist', badUserList.join());
 	}
 
 	/**
 	 * Load the bad user list from local storage.
 	 */
-	function loadData()
-	{
+	function loadData() {
 		var loadedList = localStorage.getItem('whtb-blocklist');
 		logAdd('Load Block-List');
 
@@ -100,8 +98,7 @@
 	 *
 	 * @param {string} username - Username to block
 	 */
-	function blockUser(username)
-	{
+	function blockUser(username) {
 		// Check if User is already in list
 		if(badUserList.indexOf(username) !== -1) {
 			refreshPage(); // Reload to remove wrong buttons that may cause this case
@@ -119,8 +116,7 @@
 	 *
 	 * @param {string} username - Username to unblock
 	 */
-	function unblockUser(username)
-	{
+	function unblockUser(username) {
 		var index = badUserList.indexOf(username);
 
 		// Check if User is in list
@@ -141,8 +137,7 @@
 	 * @param {string} needle - Start string on haystack
 	 * @returns {boolean} - true if haystack starts with needle
 	 */
-	function stringStartWith(haystack, needle)
-	{
+	function stringStartWith(haystack, needle) {
 		return haystack.toLowerCase().indexOf(needle.toLowerCase()) === 0;
 	}
 
@@ -180,8 +175,7 @@
 	 * @param {string} username - Username of the UnBlock-User for this Button
 	 * @returns {Element} - UnBlock-Button
 	 */
-	function createUnBlockButton(username)
-	{
+	function createUnBlockButton(username) {
 		var restoreButton = document.createElement('span');
 		assignButtonCSS(restoreButton);
 		restoreButton.innerHTML = username;
@@ -189,12 +183,9 @@
 		/**
 		 * Adds the unblockUser function to this Button
 		 */
-		restoreButton.onclick = function()
-		{
-			if(skipConfirmationDialog ||
-				confirm('Do you really want unblock ' + username + '?')) {
+		restoreButton.onclick = function() {
+			if(skipConfirmationDialog || confirm('Do you really want unblock ' + username + '?'))
 				unblockUser(username);
-			}
 		};
 
 		return restoreButton;
@@ -207,8 +198,7 @@
 	 * @param {boolean} displayName - Display the Name on the button? Default is true
 	 * @returns {Element} - BlockButton
 	 */
-	function createBlockButton(username, displayName)
-	{
+	function createBlockButton(username, displayName) {
 		var hideButton = document.createElement('span');
 		displayName = (typeof displayName === 'undefined') ? true : displayName;
 
@@ -223,12 +213,9 @@
 		/**
 		 * Adds the blockUser function to this Button
 		 */
-		hideButton.onclick = function()
-		{
-			if(skipConfirmationDialog ||
-				confirm('Are you sure to block ' + username + '?')) {
+		hideButton.onclick = function() {
+			if(skipConfirmationDialog || confirm('Are you sure to block ' + username + '?'))
 				blockUser(username);
-			}
 		};
 
 		return hideButton;
@@ -240,8 +227,7 @@
 	 * @param {Element} hideElement - Element to Hide/Show
 	 * @returns {Element} - Show/Hide Button
 	 */
-	function createShowHideButton(hideElement)
-	{
+	function createShowHideButton(hideElement) {
 		var showHideButton = document.createElement('span');
 		assignButtonCSS(showHideButton);
 
@@ -254,8 +240,7 @@
 		/**
 		 * Hide/Shows the Element also changes the Text on the Button
 		 */
-		showHideButton.onclick = function()
-		{
+		showHideButton.onclick = function() {
 			if(hideElement.style.display === 'none') {
 				hideElement.style.display = '';
 				this.innerHTML = 'Hide';
@@ -273,8 +258,7 @@
 	 *
 	 * @returns {Element} - Temp show all Button
 	 */
-	function createShowContentButton()
-	{
+	function createShowContentButton() {
 		var button = document.createElement('span');
 		assignButtonCSS(button);
 		button.className = 'whtb-button-reshow-blocked-content';
@@ -288,8 +272,7 @@
 		/**
 		 * Switches the option if blocked content will be shown or not
 		 */
-		button.onclick = function()
-		{
+		button.onclick = function() {
 			if(showBlockedContent) {
 				showBlockedContent = false;
 				this.innerHTML = 'Temporary re-display blocked content';
@@ -313,8 +296,7 @@
 	 * @param {string} text - Text to describe the Content
 	 * @returns {Element} - The unlock Button-Container
 	 */
-	function unlockButtonContainer(className, insertBefore, text)
-	{
+	function unlockButtonContainer(className, insertBefore, text) {
 		var unblockButtonBox = document.getElementsByClassName(className);
 
 		if(unblockButtonBox.length === 0) {
@@ -342,8 +324,7 @@
 	 * @param {Array} userArray - Array with User Names
 	 * @param {Element} addToEl - Element where the Buttons go as child
 	 */
-	function createUnblockButtonListFromArray(userArray, addToEl)
-	{
+	function createUnblockButtonListFromArray(userArray, addToEl) {
 		// Clear Element first to avoid double buttons
 		addToEl.innerHTML = '';
 
@@ -363,8 +344,7 @@
 	 *
 	 * @param {string} className - Class Name of the Button(s)
 	 */
-	function removeExistingButtons(className)
-	{
+	function removeExistingButtons(className) {
 		var existingButtons = document.getElementsByClassName(className);
 
 		while(existingButtons.length > 0)
@@ -377,8 +357,7 @@
 	 * @param {Document|Element} element - Content-Element
 	 * @param {boolean} mouseOverButtons - Use mouse over buttons
 	 */
-	function handleItem(element, mouseOverButtons)
-	{
+	function handleItem(element, mouseOverButtons) {
 		var userLink = element.getElementsByClassName('user-link');
 
 		if(userLink.length === 0)
@@ -440,8 +419,7 @@
 	/**
 	 * Refresh OUR data on the page. (Doesn't cause an actual page request.)
 	 */
-	function refreshPage()
-	{
+	function refreshPage() {
 		logAdd('Refresh Page...');
 		resetCurrentBlockUser();
 
@@ -471,8 +449,7 @@
 	 * @param {string} itemClassName - Class name of Content-Elements
 	 * @param {boolean} allowMouseOver - Allow use of MouseOver-Buttons here
 	 */
-	function refreshSiteByParam(mainContainerClassName, targetContainer, itemClassName, allowMouseOver)
-	{
+	function refreshSiteByParam(mainContainerClassName, targetContainer, itemClassName, allowMouseOver) {
 		// Get the MainContainer
 		var mainContainer = document.getElementsByClassName(mainContainerClassName);
 
@@ -510,8 +487,7 @@
 	/**
 	 * Creates optional event listener on a page for ajax load
 	 */
-	function createEventListener()
-	{
+	function createEventListener() {
 		if(stringStartWith(document.title, 'g4 :: Messages')) {
 			var elements = document.getElementsByClassName('msg-loader');
 
@@ -519,10 +495,8 @@
 				/**
 				 * Adds a refresh function if clicked on show more
 				 */
-				elements[i].onclick = function()
-				{
-					setTimeout(function()
-					{
+				elements[i].onclick = function() {
+					setTimeout(function() {
 						refreshPage();
 					}, 2000);
 				}
