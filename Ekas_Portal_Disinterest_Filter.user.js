@@ -103,7 +103,7 @@
 	function blockUser(username)
 	{
 		// Check if User is already in list
-		if(badUserList.indexOf(username) != -1) {
+		if(badUserList.indexOf(username) !== -1) {
 			refreshPage(); // Reload to remove wrong buttons that may cause this case
 			return;
 		}
@@ -124,7 +124,7 @@
 		var index = badUserList.indexOf(username);
 
 		// Check if User is in list
-		if(index == -1) {
+		if(index === -1) {
 			refreshPage(); // Reload to remove wrong buttons that may cause this case
 			return;
 		}
@@ -246,7 +246,7 @@
 		assignButtonCSS(showHideButton);
 
 		// Initial text depends on status of the element
-		if(hideElement.style.display == 'none')
+		if(hideElement.style.display === 'none')
 			showHideButton.innerHTML = 'Show';
 		else
 			showHideButton.innerHTML = 'Hide';
@@ -256,7 +256,7 @@
 		 */
 		showHideButton.onclick = function()
 		{
-			if(hideElement.style.display == 'none') {
+			if(hideElement.style.display === 'none') {
 				hideElement.style.display = '';
 				this.innerHTML = 'Hide';
 			} else {
@@ -317,7 +317,7 @@
 	{
 		var unblockButtonBox = document.getElementsByClassName(className);
 
-		if(unblockButtonBox.length == 0) {
+		if(unblockButtonBox.length === 0) {
 			var newUnblockButtonBox = document.createElement('div');
 			var unblockButtonArea = document.createElement('div');
 
@@ -381,7 +381,7 @@
 	{
 		var userLink = element.getElementsByClassName('user-link');
 
-		if(userLink.length == 0)
+		if(userLink.length === 0)
 			return;
 
 		// Get UserLink and Username
@@ -389,7 +389,7 @@
 		var username = userLink.innerHTML;
 
 		// Hide if user is in list
-		if(badUserList.indexOf(username) != -1) {
+		if(badUserList.indexOf(username) !== -1) {
 			if(showBlockedContent) {
 				element.style.display = '';
 				element.style.backgroundColor = '#AA0000';
@@ -398,7 +398,7 @@
 				element.style.display = 'none';
 
 			// Add to current block list if not in there
-			if(currentUserHiddenList.indexOf(username) == -1)
+			if(currentUserHiddenList.indexOf(username) === -1)
 				currentUserHiddenList.push(username);
 		} else { // Show Block-Button
 			var hideButton;
@@ -458,7 +458,7 @@
 		if(stringStartWith(document.title, 'g4 :: Search Results'))
 			refreshSiteByParam('g-box-contents', 1, 'gallery-item', true);
 
-		if(document.title == "Eka's Portal") {
+		if(document.title === "Eka's Portal") {
 			// todo handle main page
 		}
 	}
