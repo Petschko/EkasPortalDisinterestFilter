@@ -274,7 +274,7 @@
 	 * Check if a unlock Button-container is available if not create it
 	 *
 	 * @param {string} className - Class Name of the unlock Button-Container
-	 * @param {NodeList} insertBefore - The element where to place the Button-Container(before element)
+	 * @param {NodeList|Element} insertBefore - The element where to place the Button-Container(before element)
 	 * @param {string} text - Text to describe the Content
 	 * @returns {Element} - The unlock Button-Container
 	 */
