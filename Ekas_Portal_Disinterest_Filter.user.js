@@ -3,7 +3,7 @@
 // @namespace    http://zcxv.com/
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
-// @version      0.7.2
+// @version      1.0.0
 // @encoding     utf-8
 // @licence      https://raw.githubusercontent.com/Petschko/EkasPortalDisinterestFilter/master/LICENSE
 // @homepage     https://github.com/Petschko/EkasPortalDisinterestFilter
@@ -152,10 +152,34 @@
 	}
 
 	/**
-	 * todo
+	 * Imports Data from a JSON-String
+	 *
+	 * @param {Object|String} importJSON - Imported JSON-Object/String
 	 */
-	function importData() {
-		// todo
+	function importData(importJSON) {
+		var newList = [];
+
+		try {
+			newList = JSON.parse(importJSON);
+		} catch(e) {
+			alert('Error: Your browser doesn\'t support JSON-Methods...');
+
+			return;
+		}
+
+		// Warn user on specific behaviours
+		if(newList.length < 1) {
+			if(! confirm('WARNING: The imported List seems to be empty... Do you want import it anyway?'))
+				return;
+		} else if(badUserList.length > 0)
+			if(! confirm('WARNING: The imported list will replace your current one! Please note, that it does not add the Users, it REPLACES them! Do you want go on?'))
+				return;
+
+		// Save new List
+		badUserList = newList;
+		saveData();
+
+		alert('Successfully imported ' + badUserList.length + ' Users from File');
 	}
 
 	/**
@@ -334,6 +358,52 @@
 		 */
 		button.onclick = function() {
 			exportData();
+		};
+
+		return button;
+	}
+
+	/**
+	 * Creates an Import-Button
+	 *
+	 * @returns {Element} - Import Button
+	 */
+	function createImportButton() {
+		var button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'whtb-button-import';
+		button.innerHTML = 'Import Blocked-User List';
+
+		/**
+		 * Downloads a JSON-File with all currently blocked users
+		 */
+		button.onclick = function() {
+			var inputFile = document.createElement('input');
+			inputFile.style.display = 'none';
+			inputFile.type = 'file';
+			inputFile.accept = 'text/*';
+			inputFile.click();
+			/**
+			 * Process the Files
+			 */
+			inputFile.onchange = function() {
+				if(inputFile.files.length < 1)
+					return;
+
+				var reader = new FileReader();
+				/**
+				 * Reads the File and import its Content
+				 */
+				reader.addEventListener('load', function() {
+					importData(this.result);
+
+					// Refresh the Page and remove this element
+					refreshPage();
+					inputFile.remove();
+				}, false);
+
+				reader.readAsText(inputFile.files[0]);
+			};
 		};
 
 		return button;
@@ -528,7 +598,8 @@
 
 		// Add all main buttons to the Main Container
 		if(mainContainer.getElementsByClassName('whtb-button-reshow-blocked-content').length < 1) {
-			//mainContainer.insertBefore(createExportButton(), mainContainer.firstChild);
+			mainContainer.insertBefore(createImportButton(), mainContainer.firstChild);
+			mainContainer.insertBefore(createExportButton(), mainContainer.firstChild);
 			mainContainer.insertBefore(createShowContentButton(), mainContainer.firstChild);
 		}
 	}
