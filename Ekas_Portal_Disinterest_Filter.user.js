@@ -3,7 +3,7 @@
 // @namespace    http://zcxv.com/
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
-// @version      0.7.1.1
+// @version      0.7.2
 // @encoding     utf-8
 // @licence      https://raw.githubusercontent.com/Petschko/EkasPortalDisinterestFilter/master/LICENSE
 // @homepage     https://github.com/Petschko/EkasPortalDisinterestFilter
@@ -152,6 +152,54 @@
 	}
 
 	/**
+	 * todo
+	 */
+	function importData() {
+		// todo
+	}
+
+	/**
+	 * Exports the Blocked-User-List to an JSON-File
+	 */
+	function exportData() {
+		var jsonExport = '';
+
+		try {
+			jsonExport = JSON.stringify(badUserList);
+		} catch(e) {
+			alert('Error: Your browser doesn\'t support JSON-Methods...');
+
+			return;
+		}
+
+		var fileBlob = new Blob([jsonExport], {type: 'text/plain'});
+		var blobUrl = window.URL.createObjectURL(fileBlob);
+
+		// Download
+		var a = document.createElement('a');
+		a.style.display = 'none';
+		a.href = blobUrl;
+		a.download = 'EkasDisinterestFilterExport.json';
+		a.innerHTML = 'Export-Download';
+
+		/**
+		 * Removes this Element from HTML-Document
+		 *
+		 * @param {Object} ev - Event-Object
+		 */
+		a.onclick = function(ev) {
+			document.body.removeChild(ev.target);
+		};
+
+		document.body.appendChild(a);
+		a.click();
+
+		// Clear Memory
+		window.URL.revokeObjectURL(blobUrl);
+		fileBlob = null;
+	}
+
+	/**
 	 * Creates a UnBlock button with assigned OnClick function
 	 *
 	 * @param {string} username - Username of the UnBlock-User for this Button
@@ -265,6 +313,27 @@
 
 			// Refresh the page to update the content
 			refreshPage();
+		};
+
+		return button;
+	}
+
+	/**
+	 * Creates an Export-Button
+	 *
+	 * @returns {Element} - Export Button
+	 */
+	function createExportButton() {
+		var button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'whtb-button-export';
+		button.innerHTML = 'Export Blocked-User List';
+
+		/**
+		 * Downloads a JSON-File with all currently blocked users
+		 */
+		button.onclick = function() {
+			exportData();
 		};
 
 		return button;
@@ -457,9 +526,11 @@
 		// Generate the "Unblock button" list at the top. just for user on this page
 		createUnblockButtonListFromArray(currentUserHiddenList, unblockButtonBox);
 
-		// Add temp show button to box
-		if(mainContainer.getElementsByClassName('whtb-button-reshow-blocked-content').length < 1)
+		// Add all main buttons to the Main Container
+		if(mainContainer.getElementsByClassName('whtb-button-reshow-blocked-content').length < 1) {
+			//mainContainer.insertBefore(createExportButton(), mainContainer.firstChild);
 			mainContainer.insertBefore(createShowContentButton(), mainContainer.firstChild);
+		}
 	}
 
 	/**
