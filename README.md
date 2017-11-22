@@ -18,7 +18,9 @@ all. But at least it'll save you some scrolling.
 ----
 
 ### Firefox
-1. Get [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/).
+1. Get a Script-Manager:
+  - Firefox v.57 and higher: [Tampermonkey](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)
+  - Firefox v.56 and lower: [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/).
 2. [Install this Script](https://github.com/Petschko/EkasPortalDisinterestFilter/raw/master/Ekas_Portal_Disinterest_Filter.user.js)
 
 ### Chrome
