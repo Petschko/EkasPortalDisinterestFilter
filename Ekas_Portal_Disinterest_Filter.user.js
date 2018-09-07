@@ -3,7 +3,7 @@
 // @namespace    http://zcxv.com/
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
-// @version      1.0.0
+// @version      1.1.0
 // @encoding     utf-8
 // @licence      https://raw.githubusercontent.com/Petschko/EkasPortalDisinterestFilter/master/LICENSE
 // @homepage     https://github.com/Petschko/EkasPortalDisinterestFilter
@@ -11,8 +11,8 @@
 // @contactURL   https://github.com/Petschko/EkasPortalDisinterestFilter#contact
 // @updateURL    https://github.com/Petschko/EkasPortalDisinterestFilter/raw/master/Ekas_Portal_Disinterest_Filter.user.js
 // @downloadURL  https://github.com/Petschko/EkasPortalDisinterestFilter/raw/master/Ekas_Portal_Disinterest_Filter.user.js
-// @match        http://aryion.com/g4/*
-// @match        https://aryion.com/g4/*
+// @match        http://aryion.com/*
+// @match        https://aryion.com/*
 // @grant        none
 // ==/UserScript==
 
@@ -62,6 +62,20 @@
 	var showBlockedContent = false;
 
 	/**
+	 * DON'T CHANGE! This is a system value, which saves if the user CSS was already removed, to avoid duplicate removing from head styles
+	 *
+	 * @type {boolean} - true when user css was removed else false
+	 */
+	var removedUserCss = false;
+
+	/**
+	 * Contains all Users where the User-Style (Custom Style) is blocked and reset to Eka's default
+	 *
+	 * @type {Array} - All Users where the Style is blocked by default
+	 */
+	var userStyleBlockList = [];
+
+	/**
 	 * Resets the current Block User List
 	 */
 	function resetCurrentBlockUser() {
@@ -73,24 +87,33 @@
 	 */
 	function saveData() {
 		localStorage.setItem('whtb-blocklist', badUserList.join());
+		localStorage.setItem('tigercloud-ekas-desinterest-styleBlockList', userStyleBlockList.join());
 	}
 
 	/**
-	 * Load the bad user list from local storage.
+	 * Load all settings from the local storage.
 	 */
 	function loadData() {
 		var loadedList = localStorage.getItem('whtb-blocklist');
-		logAdd('Load Block-List');
+		var loadedStylesList = localStorage.getItem('tigercloud-ekas-desinterest-styleBlockList');
+		logAdd('Loaded Ekas-Desinterest Block-Lists');
 
-		// Handle if list doesn't exists
-		if(loadedList === null)
-			return;
+		// Handle if blocklist exists
+		if(loadedList !== null) {
+			badUserList = loadedList.split(',');
 
-		badUserList = loadedList.split(',');
+			// Show Loaded User in Log
+			for(var i = 0; i < badUserList.length; i++)
+				logAdd('Loaded bad user: ' + badUserList[i]);
+		}
 
-		// Show Loaded User in Log
-		for(var i = 0; i < badUserList.length; i++)
-			logAdd('Loaded bad user: ' + badUserList[i]);
+		// Handle
+		if(loadedStylesList !== null) {
+			userStyleBlockList = loadedStylesList.split(',');
+
+			for(var n = 0; n < userStyleBlockList.length; n++)
+				logAdd('Loaded blocked User-Style: ' + userStyleBlockList[n]);
+		}
 	}
 
 	/**
@@ -535,6 +558,23 @@
 				userLink.parentElement.insertBefore(hideButton, userLink.nextSibling);
 			}
 		}
+	}
+
+	/**
+	 * Removes the last Style-Element in HTML-Head
+	 */
+	function removeUserCss() {
+		// don't remove more than one time the user css
+		if(removedUserCss)
+			return;
+
+		var htmlHead = document.getElementsByTagName('head')[0];
+		var headStyles = htmlHead.getElementsByTagName('style');
+
+		// Remove only the last element
+		headStyles[headStyles.length - 1].parentNode.removeChild(headStyles[headStyles.length - 1]);
+
+		removedUserCss = true;
 	}
 
 	/**
