@@ -3,7 +3,7 @@
 // @namespace    http://zcxv.com/
 // @description  Filter out artists you don't like on Eka's Portal.
 // @author       Kiri Nakatomi aka WHTB
-// @version      1.1.0
+// @version      1.1.1
 // @encoding     utf-8
 // @licence      https://raw.githubusercontent.com/Petschko/EkasPortalDisinterestFilter/master/LICENSE
 // @homepage     https://github.com/Petschko/EkasPortalDisinterestFilter
@@ -250,7 +250,7 @@
 	 * Creates a UnBlock button with assigned OnClick function
 	 *
 	 * @param {string} username - Username of the UnBlock-User for this Button
-	 * @returns {Element} - UnBlock-Button
+	 * @returns {HTMLElement} - UnBlock-Button
 	 */
 	function createUnBlockButton(username) {
 		var restoreButton = document.createElement('button');
@@ -273,7 +273,7 @@
 	 *
 	 * @param {string} username - Username of the Block-User for this Button
 	 * @param {boolean} displayName - Display the Name on the button? Default is true
-	 * @returns {Element} - BlockButton
+	 * @returns {HTMLElement} - BlockButton
 	 */
 	function createBlockButton(username, displayName) {
 		var hideButton = document.createElement('button');
@@ -301,8 +301,8 @@
 	/**
 	 * Creates a button to show/hide the hideElement
 	 *
-	 * @param {Element} hideElement - Element to Hide/Show
-	 * @returns {Element} - Show/Hide Button
+	 * @param {HTMLElement} hideElement - Element to Hide/Show
+	 * @returns {HTMLElement} - Show/Hide Button
 	 */
 	function createShowHideButton(hideElement) {
 		var showHideButton = document.createElement('button');
@@ -333,7 +333,7 @@
 	/**
 	 * Creates a button that allow you temporary show blocked content
 	 *
-	 * @returns {Element} - Temp show all Button
+	 * @returns {HTMLElement} - Temp show all Button
 	 */
 	function createShowContentButton() {
 		var button = document.createElement('button');
@@ -368,7 +368,7 @@
 	/**
 	 * Creates an Export-Button
 	 *
-	 * @returns {Element} - Export Button
+	 * @returns {HTMLElement} - Export Button
 	 */
 	function createExportButton() {
 		var button = document.createElement('button');
@@ -389,7 +389,7 @@
 	/**
 	 * Creates an Import-Button
 	 *
-	 * @returns {Element} - Import Button
+	 * @returns {HTMLElement} - Import Button
 	 */
 	function createImportButton() {
 		var button = document.createElement('button');
@@ -438,7 +438,7 @@
 	 * @param {string} className - Class Name of the unlock Button-Container
 	 * @param {NodeList|Element} insertBefore - The element where to place the Button-Container(before element)
 	 * @param {string} text - Text to describe the Content
-	 * @returns {Element} - The unlock Button-Container
+	 * @returns {Node} - The unblock Button-Container
 	 */
 	function unlockButtonContainer(className, insertBefore, text) {
 		var unblockButtonBox = document.getElementsByClassName(className);
@@ -466,7 +466,7 @@
 	 * Creates UnBlock-Buttons from User Array
 	 *
 	 * @param {Array} userArray - Array with User Names
-	 * @param {Element} addToEl - Element where the Buttons go as child
+	 * @param {HTMLElement|Node} addToEl - Element where the Buttons go as child
 	 */
 	function createUnblockButtonListFromArray(userArray, addToEl) {
 		// Clear Element first to avoid double buttons
@@ -498,7 +498,7 @@
 	/**
 	 * Hide blocked User-Content and add a block button to non blocked User-Content
 	 *
-	 * @param {Document|Element} element - Content-Element
+	 * @param {Document|HTMLElement|Node} element - Content-Element
 	 * @param {boolean} mouseOverButtons - Use mouse over buttons
 	 */
 	function handleItem(element, mouseOverButtons) {
@@ -668,7 +668,6 @@
 
 	// Loads settings
 	loadData();
-
 	// Now just do an initial refresh to show our optional stuff.
 	refreshPage();
 	// Check if we need to add optional event listeners - but only 1 time
