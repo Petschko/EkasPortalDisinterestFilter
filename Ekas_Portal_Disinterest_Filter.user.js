@@ -180,29 +180,49 @@
 	 * @param {Object|String} importJSON - Imported JSON-Object/String
 	 */
 	function importData(importJSON) {
-		var newList = [];
+		var newLists = {};
+		var userList = [];
+		var styleUserList = [];
 
 		try {
-			newList = JSON.parse(importJSON);
+			newLists = JSON.parse(importJSON);
 		} catch(e) {
 			alert('Error: Your browser doesn\'t support JSON-Methods...');
 
 			return;
 		}
 
+		// Check if its an old import format
+		if(Array.isArray(newLists))
+			userList = newLists;
+		else {
+			userList = newLists.blocked_user;
+			styleUserList = newLists.blocked_style_user;
+		}
+
 		// Warn user on specific behaviours
-		if(newList.length < 1) {
-			if(! confirm('WARNING: The imported List seems to be empty... Do you want import it anyway?'))
-				return;
-		} else if(badUserList.length > 0)
-			if(! confirm('WARNING: The imported list will replace your current one! Please note, that it does not add the Users, it REPLACES them! Do you want go on?'))
-				return;
+		var importUser = true;
+		var importUserStyle = true;
+		if(userList.length < 1)
+			importUser = confirm('WARNING: The imported User-Block-List seems to be empty... Do you want import it anyway?');
+		if(styleUserList.length < 1)
+			importUserStyle = confirm('WARNING: The imported Style-Block-List seems to be empty... Do you want import it anyway?');
+		if(badUserList.length > 0)
+			importUser = confirm('WARNING: The imported Block-List will replace your current one! Please note, that it does not add the Users, it REPLACES them! Do you want go on?');
+		if(userStyleBlockList > 0)
+			importUserStyle = confirm('WARNING: The imported Style-Block-List will replace your current one! Please note, that it does not add the Users, it REPLACES them! Do you want go on?');
 
 		// Save new List
-		badUserList = newList;
+		if(importUser)
+			badUserList = userList;
+		if(importUserStyle)
+			userStyleBlockList = styleUserList;
 		saveData();
 
-		alert('Successfully imported ' + badUserList.length + ' Users from File');
+		alert(
+			'Successfully imported ' + ((importUser) ? userList.length : '0') +
+			' Blocked-Users & ' + ((importUserStyle) ? styleUserList.length : '0') + ' Blocked-User-Styles from File'
+		);
 	}
 
 	/**
@@ -212,7 +232,7 @@
 		var jsonExport = '';
 
 		try {
-			jsonExport = JSON.stringify(badUserList);
+			jsonExport = JSON.stringify({'blocked_user': badUserList, 'blocked_style_user': userStyleBlockList});
 		} catch(e) {
 			alert('Error: Your browser doesn\'t support JSON-Methods...');
 
