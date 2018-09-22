@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Eka's Portal Disinterest Filter
 // @namespace    http://zcxv.com/
-// @description  Filter out artists you don't like on Eka's Portal.
+// @description  Filter out artists you don't like on Eka's Portal
 // @author       Kiri Nakatomi aka WHTB
-// @version      1.0.0
+// @version      1.3.0
 // @encoding     utf-8
 // @licence      https://raw.githubusercontent.com/Petschko/EkasPortalDisinterestFilter/master/LICENSE
 // @homepage     https://github.com/Petschko/EkasPortalDisinterestFilter
@@ -11,8 +11,8 @@
 // @contactURL   https://github.com/Petschko/EkasPortalDisinterestFilter#contact
 // @updateURL    https://github.com/Petschko/EkasPortalDisinterestFilter/raw/master/Ekas_Portal_Disinterest_Filter.user.js
 // @downloadURL  https://github.com/Petschko/EkasPortalDisinterestFilter/raw/master/Ekas_Portal_Disinterest_Filter.user.js
-// @match        http://aryion.com/g4/*
-// @match        https://aryion.com/g4/*
+// @match        http://aryion.com/*
+// @match        https://aryion.com/*
 // @grant        none
 // ==/UserScript==
 
@@ -20,9 +20,9 @@
 	'use strict';
 
 	/**
-	 * Option to skip confirmation dialogs when blocking a user.
+	 * Option to skip confirmation dialogs when blocking a user
 	 *
-	 * @type {boolean} - true if the confirmation is presented, otherwise false.
+	 * @type {boolean} - true if the confirmation is presented, otherwise false
 	 */
 	var skipConfirmationDialog = false;
 
@@ -62,6 +62,20 @@
 	var showBlockedContent = false;
 
 	/**
+	 * DON'T CHANGE! This is a system value, which saves if the user CSS was already removed, to avoid duplicate removing from head styles
+	 *
+	 * @type {boolean} - true when user css was removed else false
+	 */
+	var removedUserCss = false;
+
+	/**
+	 * Contains all Users where the User-Style (Custom Style) is blocked and reset to Eka's default
+	 *
+	 * @type {Array} - All Users where the Style is blocked by default
+	 */
+	var userStyleBlockList = [];
+
+	/**
 	 * Resets the current Block User List
 	 */
 	function resetCurrentBlockUser() {
@@ -69,32 +83,82 @@
 	}
 
 	/**
-	 * Save the bad user list to local storage.
+	 * Save the bad user list to local storage
 	 */
 	function saveData() {
 		localStorage.setItem('whtb-blocklist', badUserList.join());
+		localStorage.setItem('tigercloud-ekas-desinterest-styleBlockList', userStyleBlockList.join());
 	}
 
 	/**
-	 * Load the bad user list from local storage.
+	 * Load all settings from the local storage
 	 */
 	function loadData() {
 		var loadedList = localStorage.getItem('whtb-blocklist');
-		logAdd('Load Block-List');
+		var loadedStylesList = localStorage.getItem('tigercloud-ekas-desinterest-styleBlockList');
+		logAdd('Loaded Ekas-Desinterest Block-Lists');
 
-		// Handle if list doesn't exists
-		if(loadedList === null)
-			return;
+		// Handle if blocklist exists
+		if(loadedList !== null) {
+			badUserList = loadedList.split(',');
 
-		badUserList = loadedList.split(',');
+			// Show Loaded User in Log
+			for(var i = 0; i < badUserList.length; i++)
+				logAdd('Loaded bad user: ' + badUserList[i]);
+		}
 
-		// Show Loaded User in Log
-		for(var i = 0; i < badUserList.length; i++)
-			logAdd('Loaded bad user: ' + badUserList[i]);
+		// Handle
+		if(loadedStylesList !== null) {
+			userStyleBlockList = loadedStylesList.split(',');
+
+			for(var n = 0; n < userStyleBlockList.length; n++)
+				logAdd('Loaded blocked User-Style: ' + userStyleBlockList[n]);
+		}
 	}
 
 	/**
-	 * Block a user by name.
+	 * Block a user-style by name
+	 *
+	 * @param {string} username - Username for the style to block
+	 */
+	function blockUserStyle(username) {
+		// Check if User is already in list
+		if(userStyleBlockList.indexOf(username) !== -1) {
+			refreshPage(); // Reload to remove wrong buttons that may cause this case
+			return;
+		}
+
+		// Add User and save
+		userStyleBlockList.push(username);
+		refreshPage();
+		saveData();
+	}
+
+	/**
+	 * Unblock a user-style by name
+	 *
+	 * @param {string} username - Username for the style to unblock
+	 */
+	function unblockUserStyle(username) {
+		var index = userStyleBlockList.indexOf(username);
+
+		// Check if User is in list
+		if(index === -1) {
+			refreshPage(); // Reload to remove wrong buttons that may cause this case
+			return;
+		}
+
+		userStyleBlockList.splice(index, 1);
+		refreshPage();
+		saveData();
+
+		// Inform the user
+		if(confirm('Removed the user-style of ' + username + ' from the block-list. Do you want to reload the Page to see it again?'))
+			location.reload();
+	}
+
+	/**
+	 * Block a user by name
 	 *
 	 * @param {string} username - Username to block
 	 */
@@ -112,7 +176,7 @@
 	}
 
 	/**
-	 * Unblock a user by name.
+	 * Unblock a user by name
 	 *
 	 * @param {string} username - Username to unblock
 	 */
@@ -142,6 +206,44 @@
 	}
 
 	/**
+	 * Detects if the current page is a User-Profile and returns the username
+	 *
+	 * @returns {null|string} - Username of the current UserPage or null if it's not a UserPage
+	 */
+	function getUserPageUsername() {
+		var currentPath = '/' + window.location.href.split(/^(ftp|https?):\/\/aryion\.com\/(.+)$/)[2];
+		var username = null;
+		var searchG4RegEx = new RegExp(/^\/g4\/(user|gallery|favorites)\/.+$/);
+		var searchOtherRegEx = new RegExp(/^\/g4\/(userpage\.|latest\.php\?name=).+$/);
+		var searchViewRegEx = new RegExp(/^\/g4\/view\/.+$/);
+
+		// Cut of the anchor from the URL
+		currentPath = currentPath.split('#')[0];
+
+		// Get username from different patterns
+		if(currentPath.search(searchG4RegEx) !== -1) {
+			username = currentPath.split(/^\/g4\/(user|gallery|favorites)\/(.+)(\/)?(.+)?$/)[2];
+
+			// Remove sub directories if exists
+			username = username.split('/')[0];
+		} else if(currentPath.search(searchOtherRegEx) !== -1) {
+			username = currentPath.split(/^\/g4\/(userpage\.commission\.php\?id=|latest\.php\?name=)(.+)$/)[2];
+		} else if(currentPath.search(searchViewRegEx) !== -1) {
+			var gBoxElementList = document.getElementsByClassName('g-box');
+
+			if(gBoxElementList.length > 2) {
+				// Handle Drawings/Stories
+				username = gBoxElementList[0].getElementsByTagName('a')[1].innerHTML;
+			} else if(gBoxElementList.length > 0) {
+				// Handle Gallery-Directories
+				username = gBoxElementList[1].getElementsByTagName('a')[1].innerHTML;
+			}
+		}
+
+		return username;
+	}
+
+	/**
 	 * Displays a message on the console if debug is enabled
 	 *
 	 * @param {string} message - Message to add
@@ -157,29 +259,49 @@
 	 * @param {Object|String} importJSON - Imported JSON-Object/String
 	 */
 	function importData(importJSON) {
-		var newList = [];
+		var newLists = {};
+		var userList = [];
+		var styleUserList = [];
 
 		try {
-			newList = JSON.parse(importJSON);
+			newLists = JSON.parse(importJSON);
 		} catch(e) {
 			alert('Error: Your browser doesn\'t support JSON-Methods...');
 
 			return;
 		}
 
+		// Check if its an old import format
+		if(Array.isArray(newLists))
+			userList = newLists;
+		else {
+			userList = newLists.blocked_user;
+			styleUserList = newLists.blocked_style_user;
+		}
+
 		// Warn user on specific behaviours
-		if(newList.length < 1) {
-			if(! confirm('WARNING: The imported List seems to be empty... Do you want import it anyway?'))
-				return;
-		} else if(badUserList.length > 0)
-			if(! confirm('WARNING: The imported list will replace your current one! Please note, that it does not add the Users, it REPLACES them! Do you want go on?'))
-				return;
+		var importUser = true;
+		var importUserStyle = true;
+		if(userList.length < 1)
+			importUser = confirm('WARNING: The imported User-Block-List seems to be empty... Do you want import it anyway?');
+		if(styleUserList.length < 1)
+			importUserStyle = confirm('WARNING: The imported Style-Block-List seems to be empty... Do you want import it anyway?');
+		if(badUserList.length > 0)
+			importUser = confirm('WARNING: The imported Block-List will replace your current one! Please note, that it does not add the Users, it REPLACES them! Do you want go on?');
+		if(userStyleBlockList > 0)
+			importUserStyle = confirm('WARNING: The imported Style-Block-List will replace your current one! Please note, that it does not add the Users, it REPLACES them! Do you want go on?');
 
 		// Save new List
-		badUserList = newList;
+		if(importUser)
+			badUserList = userList;
+		if(importUserStyle)
+			userStyleBlockList = styleUserList;
 		saveData();
 
-		alert('Successfully imported ' + badUserList.length + ' Users from File');
+		alert(
+			'Successfully imported ' + ((importUser) ? userList.length : '0') +
+			' Blocked-Users & ' + ((importUserStyle) ? styleUserList.length : '0') + ' Blocked-User-Styles from File'
+		);
 	}
 
 	/**
@@ -189,7 +311,7 @@
 		var jsonExport = '';
 
 		try {
-			jsonExport = JSON.stringify(badUserList);
+			jsonExport = JSON.stringify({'blocked_user': badUserList, 'blocked_style_user': userStyleBlockList});
 		} catch(e) {
 			alert('Error: Your browser doesn\'t support JSON-Methods...');
 
@@ -227,7 +349,7 @@
 	 * Creates a UnBlock button with assigned OnClick function
 	 *
 	 * @param {string} username - Username of the UnBlock-User for this Button
-	 * @returns {Element} - UnBlock-Button
+	 * @returns {HTMLElement} - UnBlock-Button
 	 */
 	function createUnBlockButton(username) {
 		var restoreButton = document.createElement('button');
@@ -250,7 +372,7 @@
 	 *
 	 * @param {string} username - Username of the Block-User for this Button
 	 * @param {boolean} displayName - Display the Name on the button? Default is true
-	 * @returns {Element} - BlockButton
+	 * @returns {HTMLElement} - BlockButton
 	 */
 	function createBlockButton(username, displayName) {
 		var hideButton = document.createElement('button');
@@ -278,8 +400,8 @@
 	/**
 	 * Creates a button to show/hide the hideElement
 	 *
-	 * @param {Element} hideElement - Element to Hide/Show
-	 * @returns {Element} - Show/Hide Button
+	 * @param {HTMLElement} hideElement - Element to Hide/Show
+	 * @returns {HTMLElement} - Show/Hide Button
 	 */
 	function createShowHideButton(hideElement) {
 		var showHideButton = document.createElement('button');
@@ -310,7 +432,7 @@
 	/**
 	 * Creates a button that allow you temporary show blocked content
 	 *
-	 * @returns {Element} - Temp show all Button
+	 * @returns {HTMLElement} - Temp show all Button
 	 */
 	function createShowContentButton() {
 		var button = document.createElement('button');
@@ -345,7 +467,7 @@
 	/**
 	 * Creates an Export-Button
 	 *
-	 * @returns {Element} - Export Button
+	 * @returns {HTMLElement} - Export Button
 	 */
 	function createExportButton() {
 		var button = document.createElement('button');
@@ -366,7 +488,7 @@
 	/**
 	 * Creates an Import-Button
 	 *
-	 * @returns {Element} - Import Button
+	 * @returns {HTMLElement} - Import Button
 	 */
 	function createImportButton() {
 		var button = document.createElement('button');
@@ -415,7 +537,7 @@
 	 * @param {string} className - Class Name of the unlock Button-Container
 	 * @param {NodeList|Element} insertBefore - The element where to place the Button-Container(before element)
 	 * @param {string} text - Text to describe the Content
-	 * @returns {Element} - The unlock Button-Container
+	 * @returns {Node} - The unblock Button-Container
 	 */
 	function unlockButtonContainer(className, insertBefore, text) {
 		var unblockButtonBox = document.getElementsByClassName(className);
@@ -443,7 +565,7 @@
 	 * Creates UnBlock-Buttons from User Array
 	 *
 	 * @param {Array} userArray - Array with User Names
-	 * @param {Element} addToEl - Element where the Buttons go as child
+	 * @param {HTMLElement|Node} addToEl - Element where the Buttons go as child
 	 */
 	function createUnblockButtonListFromArray(userArray, addToEl) {
 		// Clear Element first to avoid double buttons
@@ -475,7 +597,7 @@
 	/**
 	 * Hide blocked User-Content and add a block button to non blocked User-Content
 	 *
-	 * @param {Document|Element} element - Content-Element
+	 * @param {Document|HTMLElement|Node} element - Content-Element
 	 * @param {boolean} mouseOverButtons - Use mouse over buttons
 	 */
 	function handleItem(element, mouseOverButtons) {
@@ -538,7 +660,116 @@
 	}
 
 	/**
-	 * Refresh OUR data on the page. (Doesn't cause an actual page request.)
+	 * Removes the last Style-Element in HTML-Head
+	 */
+	function removeUserCss() {
+		// don't remove more than one time the user css
+		if(removedUserCss)
+			return;
+
+		var htmlHead = document.getElementsByTagName('head')[0];
+		var headStyles = htmlHead.getElementsByTagName('style');
+
+		// Remove only the last element
+		headStyles[headStyles.length - 1].parentNode.removeChild(headStyles[headStyles.length - 1]);
+
+		removedUserCss = true;
+	}
+
+	/**
+	 * Check if the given user is blocked and remove the CSS from the Userpage
+	 *
+	 * @param {string} username - Username
+	 */
+	function blockStyle(username) {
+		// Check if user is blocked
+		if(userStyleBlockList.indexOf(username) === -1)
+			return;
+
+		removeUserCss();
+	}
+
+	/**
+	 * Creates the Style-Block Buttons or unblock buttons
+	 *
+	 * @param {string} username - Username of the Current Page
+	 */
+	function createStyleBlockButtons(username) {
+		var userPageTabsEl = document.getElementById('userpagetabs');
+		var tabId = 'tigercloud-style-block-tab';
+		var isStyleBlocked = (userStyleBlockList.indexOf(username) !== -1);
+		var userTab = document.getElementById(tabId);
+
+		if(! userPageTabsEl)
+			return;
+
+		var tabList = userPageTabsEl.getElementsByTagName('ul');
+
+		if(! tabList || tabList.length < 1)
+			return;
+
+		tabList = tabList[0];
+
+		// Create the functions
+		var blockFunction = function() {
+			if(skipConfirmationDialog || confirm('Are you sure to block the Style on ' + username + '\'s Userpage?'))
+				blockUserStyle(username);
+		};
+		var unBlockFunction = function() {
+			if(skipConfirmationDialog || confirm('Are you sure to unblock the Style on ' + username + '\'s Userpage?'))
+				unblockUserStyle(username);
+		};
+
+		// Create the Tab or update it if exists
+		if(userTab) {
+			userTab.innerHTML = ((isStyleBlocked) ? 'Unblock' : 'Block') + ' this Style';
+			userTab.onclick = (isStyleBlocked) ? unBlockFunction : blockFunction;
+		} else {
+			var blockTab = document.createElement('li');
+			blockTab.id = tabId;
+			blockTab.className = 'ui-state-default ui-corner-top';
+			blockTab.style.padding = '0 12px';
+			blockTab.style.cursor = 'pointer';
+			blockTab.style.borderColor = '#C00';
+			blockTab.style.color = '#A00';
+			blockTab.innerHTML = ((isStyleBlocked) ? 'Unblock' : 'Block') + ' this Style';
+			blockTab.onclick = (isStyleBlocked) ? unBlockFunction : blockFunction;
+
+			tabList.appendChild(blockTab);
+		}
+	}
+
+	/**
+	 * Adds the user Param to the page-links, if user-tag-search is in use
+	 */
+	function fixUserTagUrlPageLinks() {
+		var currentUrl = document.location.href;
+		var isUserTagRegEx = new RegExp(/^(.+)\/g4\/tags\.php\?(.+)?user=(.+)$/);
+
+		// Exit function if url scheme does not match
+		if(currentUrl.search(isUserTagRegEx) === -1)
+			return;
+
+		var user = new URL(document.location.href).searchParams.get('user');
+
+		if(! user)
+			return;
+
+		var pageContainerList = document.getElementsByClassName('pagenav');
+
+		for(var i = 0; pageContainerList.length > i; i++) {
+			var linksElList = pageContainerList[i].getElementsByTagName('a');
+
+			for(var n = 0; linksElList.length > n; n++) {
+				// Avoid duplicate addition
+				if(linksElList[n].href.search(isUserTagRegEx) === -1)
+					linksElList[n].href = linksElList[n].href + '&user=' + encodeURI(user);
+			}
+		}
+	}
+
+	/**
+	 * Refresh OUR data on the page. (Doesn't cause an actual page request)
 	 */
 	function refreshPage() {
 		logAdd('Refresh Page...');
@@ -551,11 +782,19 @@
 		if(stringStartWith(document.title, 'g4 :: Messages'))
 			refreshSiteByParam('g-box-contents', 0, 'gallery-item', true);
 
-		if(stringStartWith(document.title, 'g4 :: Tagged'))
+		if(stringStartWith(document.title, 'g4 :: Tagged')) {
 			refreshSiteByParam('gallery-items', 0, 'gallery-item', true);
+			fixUserTagUrlPageLinks();
+		}
 
 		if(stringStartWith(document.title, 'g4 :: Search Results'))
 			refreshSiteByParam('g-box-contents', 1, 'gallery-item', true);
+
+		var username = getUserPageUsername();
+		if(username) {
+			blockStyle(username);
+			createStyleBlockButtons(username);
+		}
 	}
 
 	/**
@@ -577,13 +816,13 @@
 		// Use the first occur of the class there more of these containers but the first one is the correct container
 		mainContainer = mainContainer[targetContainer];
 
-		// Create or find the existing unblock button box, then clear it out so we can rebuild it.
+		// Create or find the existing unblock button box, then clear it out so we can rebuild it
 		var unblockButtonBox = unlockButtonContainer('whtb-unblock-box', mainContainer, 'Unblock User (On this Page):');
 		var globalUnblockButtonBox = unlockButtonContainer('whtb-global-unblock-box', mainContainer, 'Unblock User (Global List):');
 		// Add Buttons to global List
 		createUnblockButtonListFromArray(badUserList, globalUnblockButtonBox);
 
-		// Clear out existing block buttons from the last iteration.
+		// Clear out existing block buttons from the last iteration
 		removeExistingButtons('whtb-block-button');
 
 		// Get all items
@@ -628,8 +867,7 @@
 
 	// Loads settings
 	loadData();
-
-	// Now just do an initial refresh to show our optional stuff.
+	// Now just do an initial refresh to show our optional stuff
 	refreshPage();
 	// Check if we need to add optional event listeners - but only 1 time
 	createEventListener();
