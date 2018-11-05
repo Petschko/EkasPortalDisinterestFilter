@@ -3,7 +3,7 @@
 // @namespace    http://zcxv.com/
 // @description  Filter out artists you don't like on Eka's Portal
 // @author       Kiri Nakatomi aka WHTB
-// @version      1.3.0
+// @version      1.3.1
 // @encoding     utf-8
 // @licence      https://raw.githubusercontent.com/Petschko/EkasPortalDisinterestFilter/master/LICENSE
 // @homepage     https://github.com/Petschko/EkasPortalDisinterestFilter
@@ -214,7 +214,7 @@
 		var currentPath = '/' + window.location.href.split(/^(ftp|https?):\/\/aryion\.com\/(.+)$/)[2];
 		var username = null;
 		var searchG4RegEx = new RegExp(/^\/g4\/(user|gallery|favorites)\/.+$/);
-		var searchOtherRegEx = new RegExp(/^\/g4\/(userpage\.|latest\.php\?name=).+$/);
+		var searchOtherRegEx = new RegExp(/^\/g4\/(userpage\.|latest\.php\?name=|watch\.php\?id=).+$/);
 		var searchViewRegEx = new RegExp(/^\/g4\/view\/.+$/);
 
 		// Cut of the anchor from the URL
@@ -227,7 +227,7 @@
 			// Remove sub directories if exists
 			username = username.split('/')[0];
 		} else if(currentPath.search(searchOtherRegEx) !== -1) {
-			username = currentPath.split(/^\/g4\/(userpage\.commission\.php\?id=|latest\.php\?name=)(.+)$/)[2];
+			username = currentPath.split(/^\/g4\/(userpage\.commission\.php\?id=|latest\.php\?name=|watch\.php\?id=)(.+)$/)[2];
 		} else if(currentPath.search(searchViewRegEx) !== -1) {
 			var gBoxElementList = document.getElementsByClassName('g-box');
 
