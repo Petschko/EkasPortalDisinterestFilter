@@ -3,7 +3,7 @@
 // @namespace    http://zcxv.com/
 // @description  Filter out artists you don't like on Eka's Portal
 // @author       Kiri Nakatomi aka WHTB
-// @version      1.3.1
+// @version      1.3.2
 // @encoding     utf-8
 // @licence      https://raw.githubusercontent.com/Petschko/EkasPortalDisinterestFilter/master/LICENSE
 // @homepage     https://github.com/Petschko/EkasPortalDisinterestFilter
@@ -211,36 +211,28 @@
 	 * @returns {null|string} - Username of the current UserPage or null if it's not a UserPage
 	 */
 	function getUserPageUsername() {
-		var currentPath = '/' + window.location.href.split(/^(ftp|https?):\/\/aryion\.com\/(.+)$/)[2];
-		var username = null;
-		var searchG4RegEx = new RegExp(/^\/g4\/(user|gallery|favorites)\/.+$/);
-		var searchOtherRegEx = new RegExp(/^\/g4\/(userpage\.|latest\.php\?name=|watch\.php\?id=).+$/);
-		var searchViewRegEx = new RegExp(/^\/g4\/view\/.+$/);
+		var userPageTabsEl = document.getElementById('userpagetabs');
+		var styleBlockButtonExists = (!! document.getElementById('tigercloud-style-block-tab'));
 
-		// Cut of the anchor from the URL
-		currentPath = currentPath.split('#')[0];
+		if(! userPageTabsEl)
+			return null;
 
-		// Get username from different patterns
-		if(currentPath.search(searchG4RegEx) !== -1) {
-			username = currentPath.split(/^\/g4\/(user|gallery|favorites)\/(.+)(\/)?(.+)?$/)[2];
+		var userPageTabsElList = userPageTabsEl.getElementsByTagName('li');
 
-			// Remove sub directories if exists
-			username = username.split('/')[0];
-		} else if(currentPath.search(searchOtherRegEx) !== -1) {
-			username = currentPath.split(/^\/g4\/(userpage\.commission\.php\?id=|latest\.php\?name=|watch\.php\?id=)(.+)$/)[2];
-		} else if(currentPath.search(searchViewRegEx) !== -1) {
-			var gBoxElementList = document.getElementsByClassName('g-box');
+		if(! userPageTabsElList || userPageTabsElList.length === 0)
+			return null;
 
-			if(gBoxElementList.length > 2) {
-				// Handle Drawings/Stories
-				username = gBoxElementList[0].getElementsByTagName('a')[1].innerHTML;
-			} else if(gBoxElementList.length > 0) {
-				// Handle Gallery-Directories
-				username = gBoxElementList[1].getElementsByTagName('a')[1].innerHTML;
-			}
-		}
+		var userNameLink = userPageTabsElList[userPageTabsElList.length - ((styleBlockButtonExists) ? 2 : 1)].getElementsByTagName('a');
 
-		return username;
+		if(! userNameLink || userNameLink.length === 0)
+			return null;
+		else
+			userNameLink = userNameLink[0];
+
+		if(userNameLink.href.search('/g4/user/') === -1)
+			return null;
+		else
+			return userNameLink.innerHTML;
 	}
 
 	/**
