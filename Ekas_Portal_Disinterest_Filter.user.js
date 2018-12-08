@@ -228,6 +228,10 @@
 			username = username.split('/')[0];
 		} else if(currentPath.search(searchOtherRegEx) !== -1) {
 			username = currentPath.split(/^\/g4\/(userpage\.commission\.php\?id=|latest\.php\?name=|watch\.php\?id=)(.+)$/)[2];
+
+			// Clean pages and stuff behind the username
+			if(username.search('&') !== -1)
+				username = username.split('&')[0];
 		} else if(currentPath.search(searchViewRegEx) !== -1) {
 			var gBoxElementList = document.getElementsByClassName('g-box');
 
